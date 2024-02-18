@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
 
   # Development dependencies
   s.add_development_dependency 'bump', '~> 0.10.0'
-  s.add_development_dependency 'rspec', '~> 3.10.0'
+  s.add_development_dependency 'rspec', '~> 3.13.0'
   s.add_development_dependency 'simplecov', '~> 0.22.0'
 
   # Dependencies:
