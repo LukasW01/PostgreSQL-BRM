@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    postgresql-backup (0.0.9)
+    postgresql-backup (0.0.8)
       fog-aws (~> 3.13.0)
       pastel (~> 0.8.0)
       tty-prompt (~> 0.23.0)
@@ -11,7 +11,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     builder (3.2.4)
-    bump (0.8.0)
+    bump (0.10.0)
     diff-lcs (1.5.0)
     docile (1.4.0)
     excon (0.92.2)
@@ -79,7 +79,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bump (~> 0.8.0)
+  bump (~> 0.10.0)
   postgresql-backup!
   rspec (~> 3.10.0)
   simplecov (~> 0.21.2)
