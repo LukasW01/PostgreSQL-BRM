@@ -9,10 +9,11 @@ module Tools
     def initialize(configuration)
       @configuration = configuration
       @s3 = Fog::Storage.new(
-        provider: 'AWS',
+        provider: configuration.provider,
         region: configuration.region,
         aws_access_key_id: configuration.aws_access_key_id,
-        aws_secret_access_key: configuration.aws_secret_access_key
+        aws_secret_access_key: configuration.aws_secret_access_key,
+        endpoint: configuration.endpoint
       )
     end
 
@@ -75,16 +76,6 @@ module Tools
 
     attr_reader :configuration, :s3
 
-    # Force UTF-8 encoding and remove the production environment from
-    # the `ar_internal_metadata` table, unless the current Rails env
-    # is indeed `production`.
-    def file_body(file)
-      body = file.body.force_encoding("UTF-8")
-      return body if Rails.env.production?
-
-      body.gsub('environment	production', "environment	#{Rails.env}")
-    end
-
     def bucket
       @bucket ||= configuration.bucket
     end
@@ -93,6 +84,14 @@ module Tools
       @region ||= configuration.region
     end
 
+    def provider
+      @provider ||= configuration.provider
+    end
+    
+    def endpoint
+      @endpoint ||= configuration.endpoint
+    end
+    
     def remote_path
       @remote_path ||= configuration.remote_path
     end
@@ -109,6 +108,16 @@ module Tools
       @remote_file ||= s3.directories.new(key: bucket).files
     end
 
+    # Force UTF-8 encoding and remove the production environment from
+    # the `ar_internal_metadata` table, unless the current Rails env
+    # is indeed `production`.
+    def file_body(file)
+      body = file.body.force_encoding("UTF-8")
+      return body if Rails.env.production?
+
+      body.gsub('environment	production', "environment	#{Rails.env}")
+    end
+    
     # Make sure the path exists and that there are no files with
     # the same name of the one that is being downloaded.
     def prepare_local_folder(local_file_path)
