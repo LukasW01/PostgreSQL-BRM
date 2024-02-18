@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    postgresql-backup (0.0.9)
+    postgresql-backup (0.0.8)
       fog-aws (~> 3.13.0)
       pastel (~> 0.8.0)
       tty-prompt (~> 0.23.0)
@@ -55,7 +55,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.3)
-    simplecov (0.21.2)
+    simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
@@ -82,7 +82,7 @@ DEPENDENCIES
   bump (~> 0.8.0)
   postgresql-backup!
   rspec (~> 3.10.0)
-  simplecov (~> 0.21.2)
+  simplecov (~> 0.22.0)
 
 BUNDLED WITH
    2.4.15
