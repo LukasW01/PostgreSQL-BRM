@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'fog/aws'
 require 'fileutils'
 require 'pathname'
@@ -87,11 +85,11 @@ module Storage
     def provider
       @provider ||= configuration.provider
     end
-    
+
     def endpoint
       @endpoint ||= configuration.endpoint
     end
-    
+
     def remote_path
       @remote_path ||= configuration.remote_path
     end
@@ -117,7 +115,7 @@ module Storage
 
       body.gsub('environment	production', "environment	#{Rails.env}")
     end
-    
+
     # Make sure the path exists and that there are no files with
     # the same name of the one that is being downloaded.
     def prepare_local_folder(local_file_path)

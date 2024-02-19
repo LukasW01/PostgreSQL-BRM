@@ -28,15 +28,14 @@ module Notifications
         end
       end
     end
-    
+
     private
 
     attr_reader :configuration, :discord
-    
+
     def url
       @url ||= @configuration.url
     end
-    
-    
+
   end
 end

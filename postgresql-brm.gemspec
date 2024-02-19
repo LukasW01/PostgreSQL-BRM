@@ -11,10 +11,12 @@ Gem::Specification.new do |s|
 
   # Development dependencies
   s.add_development_dependency 'bump', '~> 0.10.0'
-  s.add_development_dependency 'rspec', '~> 3.13.0'
-  s.add_development_dependency 'simplecov', '~> 0.22.0'
-  s.add_development_dependency 'rubocop', '~> 1.18.0'
+  s.add_development_dependency 'rails', '~> 6.1'
   s.add_development_dependency 'rake', '~> 11.2'
+  s.add_development_dependency 'rspec', '~> 3.13.0'
+  s.add_development_dependency 'rubocop', '~> 1.18.0'
+  s.add_development_dependency 'simplecov', '~> 0.22.0'
+
 
   # Dependencies:
   s.add_dependency 'fog-aws', '>= 3.13', '< 3.22'

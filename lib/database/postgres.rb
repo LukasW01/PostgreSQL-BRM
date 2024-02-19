@@ -1,4 +1,3 @@
-
 module Database
   class Postgres
     def initialize(configuration)
@@ -43,7 +42,7 @@ module Database
 
       file_path = File.join(backup_folder, file_name)
       output_redirection = debug ? '': ' > /dev/null'
-      
+
       cmd = "PGPASSWORD='#{password}' psql -U '#{user}' -h '#{host}' -d '#{database}' -f '#{file_path}' -p '#{port}' #{output_redirection}"
       system(cmd)
 
@@ -91,6 +90,7 @@ module Database
 
     def file_suffix
       return if configuration.file_suffix.empty?
+
       @file_suffix ||= "_#{configuration.file_suffix}"
     end
 

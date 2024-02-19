@@ -25,18 +25,18 @@ module Notifications
         text: text
       )
     end
-    
+
     private
-    
+
     attr_reader :configuration, :mailgun
-    
+
     def api_key
       @api_key ||= @configuration.api_key
     end
-    
+
     def domain
       @domain ||= @configuration.domain
     end
-    
+
   end
 end
