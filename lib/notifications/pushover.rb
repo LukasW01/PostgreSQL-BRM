@@ -1,6 +1,6 @@
 require 'pushover'
 
-module Tools
+module Notifications
   class Pushover
     def initialize(configuration)
       @configuration = configuration

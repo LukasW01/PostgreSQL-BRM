@@ -1,4 +1,4 @@
-require_relative '../../lib/tools/database'
+require_relative '../../lib/database/postgres'
 require_relative '../../lib/configuration'
 
 RSpec.describe Tools::Database do

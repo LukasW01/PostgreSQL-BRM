@@ -1,6 +1,6 @@
 require 'mailgun-ruby'
 
-module Tools
+module Notifications
   class Mailgun
     def initialize(configuration)
       @configuration = configuration

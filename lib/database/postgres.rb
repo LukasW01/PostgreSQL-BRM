@@ -1,6 +1,6 @@
 
-module Tools
-  class Database
+module Database
+  class Postgres
     def initialize(configuration)
       @configuration = configuration
     end

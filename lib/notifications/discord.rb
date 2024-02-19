@@ -1,6 +1,6 @@
 require 'discordrb'
 
-module Tools
+module Notifications
   class Discord
     def initialize(configuration)
       @configuration = configuration

@@ -1,4 +1,4 @@
-require_relative '../../lib/tools/terminal'
+require_relative '../../lib/database/erminal'
 
 RSpec.describe Tools::Terminal do
   describe '.spinner' do

@@ -1,7 +1,7 @@
 require 'pastel'
 require 'tty-spinner'
 
-module Tools
+module Util
   class Terminal
     def self.spinner(text)
       pastel = Pastel.new

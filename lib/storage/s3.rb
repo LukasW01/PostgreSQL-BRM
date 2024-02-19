@@ -4,8 +4,8 @@ require 'fog/aws'
 require 'fileutils'
 require 'pathname'
 
-module Tools
-  class S3Storage
+module Storage
+  class S3
     def initialize(configuration)
       @configuration = configuration
       @s3 = Fog::Storage.new(

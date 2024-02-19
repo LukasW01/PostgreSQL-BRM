@@ -1,7 +1,7 @@
-require_relative '../tools/disclaimer'
-require_relative '../tools/terminal'
-require_relative '../tools/database'
-require_relative '../tools/s3_storage'
+require_relative '../util/disclaimer'
+require_relative '../util/terminal'
+require_relative '../database/postgres'
+require_relative '../storage/s3'
 require 'tty-prompt'
 require 'tty-spinner'
 require 'pastel'
@@ -14,11 +14,11 @@ namespace :postgresql_backup do
     texts = [text, ' ', configuration_to_text].flatten
     disclaimer.show(title: title, texts: texts)
 
-    file_path = Tools::Terminal.spinner('Backing up database') { db.dump }
+    file_path = Util::Terminal.spinner('Backing up database') { db.dump }
 
     if configuration.s3?
-      Tools::Terminal.spinner('Uploading file') { storage.upload(file_path) }
-      Tools::Terminal.spinner('Deleting local file') { File.delete(file_path) }  if File.exist?(file_path)
+      Util::Terminal.spinner('Uploading file') { storage.upload(file_path) }
+      Util::Terminal.spinner('Deleting local file') { File.delete(file_path) }  if File.exist?(file_path)
     end
 
     puts ''
@@ -33,7 +33,7 @@ namespace :postgresql_backup do
     disclaimer.show(title: title, texts: texts)
     local_file_path = ''
 
-    files = Tools::Terminal.spinner('Loading backups list') { list_backup_files }
+    files = Util::Terminal.spinner('Loading backups list') { list_backup_files }
 
     if files.present?
       puts ''
@@ -41,15 +41,15 @@ namespace :postgresql_backup do
       puts ''
 
       if configuration.s3?
-        local_file_path = Tools::Terminal.spinner('Downloading file') { storage.download(file_name) }
+        local_file_path = Util::Terminal.spinner('Downloading file') { storage.download(file_name) }
       end
 
       db.reset
 
-      Tools::Terminal.spinner('Restoring data') { db.restore(file_name) }
+      Util::Terminal.spinner('Restoring data') { db.restore(file_name) }
 
       if configuration.s3?
-        Tools::Terminal.spinner('Deleting local file') { File.delete(local_file_path) }
+        Util::Terminal.spinner('Deleting local file') { File.delete(local_file_path) }
       end
 
       puts ''
@@ -75,15 +75,15 @@ namespace :postgresql_backup do
   end
 
   def db
-    @db ||= Tools::Database.new(configuration)
+    @db ||= Database::Database.new(configuration)
   end
 
   def storage
-    @storage ||= Tools::S3Storage.new(configuration)
+    @storage ||= Storage::S3.new(configuration)
   end
 
   def disclaimer
-    @disclaimer ||= Tools::Disclaimer.new
+    @disclaimer ||= Util::Disclaimer.new
   end
 
   def pastel
