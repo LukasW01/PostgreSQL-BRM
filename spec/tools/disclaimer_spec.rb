@@ -1,4 +1,4 @@
-require_relative '../../lib/tools/disclaimer'
+require_relative '../../lib/database/isclaimer'
 
 RSpec.describe Tools::Disclaimer do
   describe '#show' do

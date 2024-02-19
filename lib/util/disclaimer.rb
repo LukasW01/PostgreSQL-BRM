@@ -1,6 +1,6 @@
 require 'pastel'
 
-module Tools
+module Util
   class Disclaimer
     def initialize(columns: 80, horizontal_character: '=', vertical_character: '|', print_output: true)
       @columns = columns

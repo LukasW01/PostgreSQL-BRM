@@ -1,4 +1,4 @@
-require 'postgresql_backup'
+require_relative 'postgresql_backup'
 
 path = File.expand_path(__dir__)
 Dir.glob("#{path}/tasks/*.rake").each { |f| import f }

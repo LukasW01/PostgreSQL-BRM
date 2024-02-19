@@ -1,4 +1,4 @@
-require_relative '../../lib/tools/s3_storage'
+require_relative '../../lib/database/e/s3_storage'
 require_relative '../../lib/configuration'
 
 RSpec.describe Tools::S3Storage do

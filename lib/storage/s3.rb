@@ -1,18 +1,17 @@
-# frozen_string_literal: true
-
 require 'fog/aws'
 require 'fileutils'
 require 'pathname'
 
-module Tools
-  class S3Storage
+module Storage
+  class S3
     def initialize(configuration)
       @configuration = configuration
       @s3 = Fog::Storage.new(
-        provider: 'AWS',
+        provider: configuration.provider,
         region: configuration.region,
         aws_access_key_id: configuration.aws_access_key_id,
-        aws_secret_access_key: configuration.aws_secret_access_key
+        aws_secret_access_key: configuration.aws_secret_access_key,
+        endpoint: configuration.endpoint
       )
     end
 
@@ -38,23 +37,6 @@ module Tools
       )
     end
 
-    # List all the files in the bucket's remote path. The result
-    # is sorted in the reverse order, the most recent file will
-    # show up first.
-    #
-    # Return an array of strings, containing only the file name.
-    def list_files
-      files = remote_directory.files.map { |file| file.key }
-
-      # The first item in the array is only the path an can be discarded.
-      files = files.slice(1, files.length - 1) || []
-
-      files
-        .map { |file| Pathname.new(file).basename.to_s }
-        .sort
-        .reverse
-    end
-
     # Create a local file with the contents of the remote file.
     #
     # The new file will be saved in the `backup_folder` that was set
@@ -71,19 +53,26 @@ module Tools
       local_file_path
     end
 
+    # List all the files in the bucket's remote path. The result
+    # is sorted in the reverse order, the most recent file will
+    # show up first.
+    #
+    # Return an array of strings, containing only the file name.
+    def list_files
+      files = remote_directory.files.map { |file| file.key }
+
+      # The first item in the array is only the path an can be discarded.
+      files = files.slice(1, files.length - 1) || []
+
+      files
+        .map { |file| Pathname.new(file).basename.to_s }
+        .sort
+        .reverse
+    end
+    
     private
 
     attr_reader :configuration, :s3
-
-    # Force UTF-8 encoding and remove the production environment from
-    # the `ar_internal_metadata` table, unless the current Rails env
-    # is indeed `production`.
-    def file_body(file)
-      body = file.body.force_encoding("UTF-8")
-      return body if Rails.env.production?
-
-      body.gsub('environment	production', "environment	#{Rails.env}")
-    end
 
     def bucket
       @bucket ||= configuration.bucket
@@ -91,6 +80,14 @@ module Tools
 
     def region
       @region ||= configuration.region
+    end
+
+    def provider
+      @provider ||= configuration.provider
+    end
+
+    def endpoint
+      @endpoint ||= configuration.endpoint
     end
 
     def remote_path
@@ -107,6 +104,16 @@ module Tools
 
     def remote_file
       @remote_file ||= s3.directories.new(key: bucket).files
+    end
+
+    # Force UTF-8 encoding and remove the production environment from
+    # the `ar_internal_metadata` table, unless the current Rails env
+    # is indeed `production`.
+    def file_body(file)
+      body = file.body.force_encoding('UTF-8')
+      return body if Rails.env.production?
+
+      body.gsub('environment	production', "environment	#{Rails.env}")
     end
 
     # Make sure the path exists and that there are no files with
