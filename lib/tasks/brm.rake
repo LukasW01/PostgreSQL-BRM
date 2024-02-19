@@ -8,7 +8,7 @@ require 'pastel'
 
 namespace :postgresql_backup do
   desc 'Dumps the database'
-  task dump: :environment do
+  task :dump do
     title = pastel.yellow.bold('POSTGRESQL BACKUP')
     text = 'You are about to backup your database. Relax on your seat, this process is usually fast and you don\'t need to do anything except wait for the process to end. Here is the current configuration for this backup:'
     texts = [text, ' ', configuration_to_text].flatten
@@ -18,7 +18,7 @@ namespace :postgresql_backup do
 
     if configuration.s3?
       Util::Terminal.spinner('Uploading file') { storage.upload(file_path) }
-      Util::Terminal.spinner('Deleting local file') { File.delete(file_path) }  if File.exist?(file_path)
+      Util::Terminal.spinner('Deleting local file') { File.delete(file_path) } if File.exist?(file_path)
     end
 
     puts ''
@@ -26,7 +26,7 @@ namespace :postgresql_backup do
   end
 
   desc 'Restores a database backup into the database'
-  task restore: :environment do
+  task :restore do
     title = pastel.green('POSTGRESQL DATABASE RESTORE')
     text = 'Let\'s get your data back. You will be prompted to choose the file to restore, but that\'s all, you can leave the rest to us. Here is the current configuration for this restore:'
     texts = [text, ' ', configuration_to_text].flatten
@@ -37,25 +37,21 @@ namespace :postgresql_backup do
 
     if files.present?
       puts ''
-      file_name = prompt.select("Choose the file to restore", files)
+      file_name = prompt.select('Choose the file to restore', files)
       puts ''
 
-      if configuration.s3?
-        local_file_path = Util::Terminal.spinner('Downloading file') { storage.download(file_name) }
-      end
+      local_file_path = Util::Terminal.spinner('Downloading file') { storage.download(file_name) } if configuration.s3?
 
       db.reset
 
       Util::Terminal.spinner('Restoring data') { db.restore(file_name) }
 
-      if configuration.s3?
-        Util::Terminal.spinner('Deleting local file') { File.delete(local_file_path) }
-      end
+      Util::Terminal.spinner('Deleting local file') { File.delete(local_file_path) } if configuration.s3?
 
       puts ''
       puts pastel.green('All done.')
     else
-      spinner = TTY::Spinner.new("#{pastel.yellow("[:spinner] ")}Restoring data...")
+      spinner = TTY::Spinner.new("#{pastel.yellow('[:spinner] ')}Restoring data...")
       error_message = "#{pastel.red.bold('failed')}. Backup files not found."
       spinner.success(error_message)
     end

@@ -2,7 +2,7 @@ require 'mailgun-ruby'
 
 module Notifications
   class Mailgun
-    def initialize(configuration)
+    def initialize
       @configuration = configuration
       @mailgun = Mailgun::Client.new(configuration.api_key, configuration.domain)
     end
@@ -17,12 +17,12 @@ module Notifications
     #   text: 'This is the body of the email'
     # )
     # ```
-    def send(from:, to:, subject:, text:)
+    def send(event)
+      result = get_event_files(event)
+
       @mailgun.send_message(
-        from: from,
-        to: to,
-        subject: subject,
-        text: text
+        'www.wigger.one',
+        { from: "Postgres-BRM <#{configuration.from}>", to: configuration.to, subject: "pg_backup - #{result['status']}", text: "#{result['description']} \n\n#{result['info']} \n\n#{result['schedule']}" }
       )
     end
 
@@ -38,5 +38,9 @@ module Notifications
       @domain ||= @configuration.domain
     end
 
+    def get_event_files(event)
+      @event = event
+      JSON.parse(File.read('data/event.json')).fetch(@event).first.to_s
+    end
   end
 end

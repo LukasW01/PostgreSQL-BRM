@@ -1,30 +1,25 @@
-require 'discordrb'
+require 'discordrb/webhooks'
+require 'json'
 
 module Notifications
   class Discord
     def initialize(configuration)
       @configuration = configuration
-      @discord = Discordrb::Webhooks::Client.new(url: configuration.url)
+      @discord = Discordrb::Webhooks::Client.new(url: configuration.url.freeze)
     end
 
-    # Send a message to the Discord channel.
-    #
-    # ```
-    # @discord.execute do |builder|
-    #  builder.content = 'Hello world!'
-    #  builder.add_embed do |embed|
-    #   embed.title = 'Embed title'
-    #   embed.description = 'Embed description'
-    #   embed.timestamp = Time.now
-    #  end
-    # ```
-    def send(message)
+    def send(event)
+      result = get_event_files(event)
+
       @discord.execute do |builder|
-        builder.content = 'Hello world!'
         builder.add_embed do |embed|
-          embed.title = 'Embed title'
-          embed.description = 'Embed description'
+          builder.username = 'Postgres-BRM'
+          embed.title = 'pg_backup'
           embed.timestamp = Time.now
+          embed.color = 3_430_821
+          embed.description = result['description']
+          embed.add_field(name: 'Status:', value: result['status'])
+          embed.add_field(name: 'Info:', value: result['info'])
         end
       end
     end
@@ -37,5 +32,9 @@ module Notifications
       @url ||= @configuration.url
     end
 
+    def get_event_files(event)
+      @event = event
+      JSON.parse(File.read('data/event.json')).fetch(@event).first.to_s
+    end
   end
 end

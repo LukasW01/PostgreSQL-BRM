@@ -17,7 +17,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop', '~> 1.18.0'
   s.add_development_dependency 'simplecov', '~> 0.22.0'
 
-
   # Dependencies:
   s.add_dependency 'fog-aws', '>= 3.13', '< 3.22'
   s.add_dependency 'pastel', '~> 0.8.0'
