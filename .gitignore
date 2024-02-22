@@ -6,6 +6,7 @@
 
 # Environment normalization
 .env
+env.yaml
 
 # Test coverage (spec) directory
 /coverage/

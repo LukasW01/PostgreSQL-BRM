@@ -1,10 +1,10 @@
 require 'mailgun-ruby'
 
 module Notifications
-  class Mailgun
+  class MailGun
     def initialize
-      @configuration = configuration
-      @mailgun = Mailgun::Client.new(configuration.api_key, configuration.domain)
+      @configuration = Util::Configuration.new.get(:mailgun)
+      @mailgun = Mailgun::Client.new(@configuration['api_key'], @configuration['mailgun_domain'])
     end
 
     # Send an email through Mailgun.
@@ -18,11 +18,15 @@ module Notifications
     # )
     # ```
     def send(event)
-      result = get_event_files(event)
+      event_files = get_event_file(event)
 
       @mailgun.send_message(
-        'www.wigger.one',
-        { from: "Postgres-BRM <#{configuration.from}>", to: configuration.to, subject: "pg_backup - #{result['status']}", text: "#{result['description']} \n\n#{result['info']} \n\n#{result['schedule']}" }
+        @configuration['domain'],
+        {
+          from: "Postgres-BRM <#{@configuration['from']}>", to: @configuration['to'],
+          subject: "pg_backup - #{event_files['status']}",
+          text: "#{event_files['description']} \n\n#{event_files['info']} \n\n#{event_files['schedule']}" 
+        }
       )
     end
 
@@ -30,17 +34,9 @@ module Notifications
 
     attr_reader :configuration, :mailgun
 
-    def api_key
-      @api_key ||= @configuration.api_key
-    end
-
-    def domain
-      @domain ||= @configuration.domain
-    end
-
-    def get_event_files(event)
-      @event = event
-      JSON.parse(File.read('data/event.json')).fetch(@event).first.to_s
+    def get_event_file(event)
+      yaml = {}
+      yaml.merge!(Hash[YAML::load(open("data/event.yaml")).map { |k, v| [k.to_sym, v] }])[event.to_sym]
     end
   end
 end

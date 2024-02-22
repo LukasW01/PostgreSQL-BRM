@@ -2,6 +2,9 @@ require_relative '../util/disclaimer'
 require_relative '../util/terminal'
 require_relative '../database/postgres'
 require_relative '../storage/s3'
+require_relative '../notifications/discord'
+require_relative '../notifications/pushover'
+require_relative '../notifications/mailgun'
 require 'tty-prompt'
 require 'tty-spinner'
 require 'pastel'
@@ -71,11 +74,11 @@ namespace :postgresql_backup do
   end
 
   def db
-    @db ||= Database::Database.new(configuration)
+    @db ||= Database::Database.new
   end
 
   def storage
-    @storage ||= Storage::S3.new(configuration)
+    @storage ||= Storage::S3.new
   end
 
   def disclaimer

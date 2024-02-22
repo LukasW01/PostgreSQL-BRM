@@ -2,39 +2,35 @@ require 'discordrb/webhooks'
 require 'json'
 
 module Notifications
+
+  attr_reader :configuration, :discord
   class Discord
-    def initialize(configuration)
-      @configuration = configuration
-      @discord = Discordrb::Webhooks::Client.new(url: configuration.url.freeze)
+    def initialize
+      @configuration = Util::Configuration.new.get(:discord)
+      @discord = Discordrb::Webhooks::Client.new(url: @configuration['webhook'].freeze)
     end
 
     def send(event)
-      result = get_event_files(event)
+      event_file = get_event_file(event)
 
       @discord.execute do |builder|
+        builder.username = 'Postgres-BRM'
         builder.add_embed do |embed|
-          builder.username = 'Postgres-BRM'
           embed.title = 'pg_backup'
           embed.timestamp = Time.now
           embed.color = 3_430_821
-          embed.description = result['description']
-          embed.add_field(name: 'Status:', value: result['status'])
-          embed.add_field(name: 'Info:', value: result['info'])
+          embed.description = event_file['description']
+          embed.add_field(name: 'Status:', value: event_file['status'])
+          embed.add_field(name: 'Info:', value: event_file['info'])
         end
       end
     end
 
     private
 
-    attr_reader :configuration, :discord
-
-    def url
-      @url ||= @configuration.url
-    end
-
-    def get_event_files(event)
-      @event = event
-      JSON.parse(File.read('data/event.json')).fetch(@event).first.to_s
+    def get_event_file(event)
+      yaml = {}
+      yaml.merge!(Hash[YAML::load(open("data/event.yaml")).map { |k, v| [k.to_sym, v] }])[event.to_sym]
     end
   end
 end

@@ -1,7 +1,11 @@
+require_relative '../util/configuration'
+
 module Database
   class Postgres
-    def initialize(configuration)
-      @configuration = configuration
+
+    attr_reader :configuration, :postgres
+    def initialize
+      @configuration = Util::Configuration.new.get(:postgres)
     end
 
     # Backup the database and save it on the backup folder set in the
@@ -11,14 +15,10 @@ module Database
     #
     # Return the full path of the backup file created in the disk.
     def dump(debug: false)
-      hooks.before_dump
-
       file_path = File.join(backup_folder, "#{file_name}#{file_suffix}.sql")
 
-      cmd = "PGPASSWORD='#{password}' pg_dump -F p -v -O -U '#{user}' -h '#{host}' -d '#{database}' -f '#{file_path}' -p '#{port}' "
+      cmd = "PGPASSWORD='#{@configuration['password']}' pg_dump -F p -v -O -U '#{@configuration['user']}' -h '#{@configuration['host']}' -p '#{@configuration['port']}' -d '#{@configuration['database']}' -f '#{file_path}' "
       debug ? system(cmd) : system(cmd, err: File::NULL)
-
-      hooks.after_dump
 
       file_path
     end
@@ -38,15 +38,10 @@ module Database
     # If you need to make the command more verbose, pass
     # `debug: true` in the arguments of the function.
     def restore(file_name, debug: false)
-      hooks.before_restore
-
       file_path = File.join(backup_folder, file_name)
-      output_redirection = debug ? '' : ' > /dev/null'
 
-      cmd = "PGPASSWORD='#{password}' psql -U '#{user}' -h '#{host}' -d '#{database}' -f '#{file_path}' -p '#{port}' #{output_redirection}"
-      system(cmd)
-
-      hooks.after_restore
+      cmd = "PGPASSWORD='#{@configuration['password']}' psql -U '#{@configuration['user']}' -h '#{@configuration['host']}' -p '#{@configuration['port']}' -d '#{@configuration['database']}' -f '#{file_path}' #{output_redirection}"
+      debug ? system(cmd) : system(cmd, err: File::NULL)
 
       file_path
     end
@@ -62,28 +57,6 @@ module Database
 
     private
 
-    attr_reader :configuration
-
-    def host
-      @host ||= ::ActiveRecord::Base.connection_db_config.configuration_hash[:host]
-    end
-
-    def port
-      @port ||= ::ActiveRecord::Base.connection_db_config.configuration_hash[:port]
-    end
-
-    def database
-      @database ||= ::ActiveRecord::Base.connection_db_config.configuration_hash[:database]
-    end
-
-    def user
-      ::ActiveRecord::Base.connection_db_config.configuration_hash[:username]
-    end
-
-    def password
-      @password ||= ::ActiveRecord::Base.connection_db_config.configuration_hash[:password]
-    end
-
     def file_name
       @file_name ||= Time.current.strftime('%Y%m%d%H%M%S')
     end
@@ -91,7 +64,7 @@ module Database
     def file_suffix
       return if configuration.file_suffix.empty?
 
-      @file_suffix ||= "_#{configuration.file_suffix}"
+      @file_suffix ||= "_#{@configuration['database']}"
     end
 
     def backup_folder
@@ -100,10 +73,6 @@ module Database
           FileUtils.mkdir_p(folder)
         end
       end
-    end
-
-    def hooks
-      @hooks ||= configuration.hooks
     end
 
   end

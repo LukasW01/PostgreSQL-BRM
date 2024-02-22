@@ -4,14 +4,16 @@ require 'pathname'
 
 module Storage
   class S3
-    def initialize(configuration)
-      @configuration = configuration
+
+    attr_reader :configuration, :s3
+    def initialize
+      @configuration = Util::Configuration.new.get(:s3)
       @s3 = Fog::Storage.new(
-        provider: configuration.provider,
-        region: configuration.region,
-        aws_access_key_id: configuration.aws_access_key_id,
-        aws_secret_access_key: configuration.aws_secret_access_key,
-        endpoint: configuration.endpoint
+        provider: @configuration['provider'],
+        region: @configuration['region'],
+        aws_access_key_id: @configuration['access_key'],
+        aws_secret_access_key: @configuration['secret_access_key'],
+        endpoint: @configuration['endpoint']
       )
     end
 
@@ -71,33 +73,7 @@ module Storage
     end
     
     private
-
-    attr_reader :configuration, :s3
-
-    def bucket
-      @bucket ||= configuration.bucket
-    end
-
-    def region
-      @region ||= configuration.region
-    end
-
-    def provider
-      @provider ||= configuration.provider
-    end
-
-    def endpoint
-      @endpoint ||= configuration.endpoint
-    end
-
-    def remote_path
-      @remote_path ||= configuration.remote_path
-    end
-
-    def backup_folder
-      @backup_folder ||= configuration.backup_folder
-    end
-
+    
     def remote_directory
       @remote_directory ||= s3.directories.get(bucket, prefix: remote_path)
     end
