@@ -7,12 +7,10 @@ module Storage
 
     attr_reader :configuration, :s3
     def initialize
-      @configuration = Util::Configuration.new.get(:s3)
+      @configuration = Util::Configuration.new.get(:s3).verify(:access_key, :secret_access_key, :provider, :region, :endpoint)
       @s3 = Fog::Storage.new(
-        provider: @configuration['provider'],
-        region: @configuration['region'],
-        aws_access_key_id: @configuration['access_key'],
-        aws_secret_access_key: @configuration['secret_access_key'],
+        provider: @configuration['provider'], region: @configuration['region'],
+        aws_access_key_id: @configuration['access_key'], aws_secret_access_key: @configuration['secret_access_key'],
         endpoint: @configuration['endpoint']
       )
     end
@@ -86,16 +84,13 @@ module Storage
     # the `ar_internal_metadata` table, unless the current Rails env
     # is indeed `production`.
     def file_body(file)
-      body = file.body.force_encoding('UTF-8')
-      return body if Rails.env.production?
-
-      body.gsub('environment	production', "environment	#{Rails.env}")
+      file.body.force_encoding('UTF-8')
     end
 
     # Make sure the path exists and that there are no files with
     # the same name of the one that is being downloaded.
     def prepare_local_folder(local_file_path)
-      FileUtils.mkdir_p(backup_folder)
+      FileUtils.mkdir_p("backup")
       File.delete(local_file_path) if File.exist?(local_file_path)
     end
 

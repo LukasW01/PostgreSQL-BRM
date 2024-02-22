@@ -1,9 +1,7 @@
-require_relative '../hooks'
-
 module Util
   class Configuration
 
-    def initialize()
+    def initialize
       @options = {}
       load_yaml
     end
@@ -14,6 +12,12 @@ module Util
     
     def get(key)
       @options[key]
+    end
+    
+    def verify(key, list)
+      unless list.include? @options[key]
+        raise "Invalid value for #{key}."
+      end
     end
   end
 end

@@ -1,17 +1,18 @@
 require 'discordrb/webhooks'
-require 'json'
+require_relative '../util/event'
+require_relative '../util/configuration'
 
 module Notifications
 
   attr_reader :configuration, :discord
   class Discord
     def initialize
-      @configuration = Util::Configuration.new.get(:discord)
+      @configuration = Util::Configuration.new.get(:discord).verify(:webhook)
       @discord = Discordrb::Webhooks::Client.new(url: @configuration['webhook'].freeze)
     end
 
     def send(event)
-      event_file = get_event_file(event)
+      event_file = Util::Event.new.get_event_file(event)
 
       @discord.execute do |builder|
         builder.username = 'Postgres-BRM'
@@ -24,13 +25,6 @@ module Notifications
           embed.add_field(name: 'Info:', value: event_file['info'])
         end
       end
-    end
-
-    private
-
-    def get_event_file(event)
-      yaml = {}
-      yaml.merge!(Hash[YAML::load(open("data/event.yaml")).map { |k, v| [k.to_sym, v] }])[event.to_sym]
     end
   end
 end

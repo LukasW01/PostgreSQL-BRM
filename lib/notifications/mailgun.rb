@@ -1,9 +1,13 @@
 require 'mailgun-ruby'
+require_relative '../util/event'
+require_relative '../util/configuration'
 
 module Notifications
   class MailGun
+
+    attr_reader :configuration, :mailgun
     def initialize
-      @configuration = Util::Configuration.new.get(:mailgun)
+      @configuration = Util::Configuration.new.get(:mailgun).verify(:api_key, :mailgun_domain, :domain, :from, :to)
       @mailgun = Mailgun::Client.new(@configuration['api_key'], @configuration['mailgun_domain'])
     end
 
@@ -18,8 +22,8 @@ module Notifications
     # )
     # ```
     def send(event)
-      event_files = get_event_file(event)
-
+      event_files = Util::Event.new.get_event_file(event) 
+        
       @mailgun.send_message(
         @configuration['domain'],
         {
@@ -28,15 +32,6 @@ module Notifications
           text: "#{event_files['description']} \n\n#{event_files['info']} \n\n#{event_files['schedule']}" 
         }
       )
-    end
-
-    private
-
-    attr_reader :configuration, :mailgun
-
-    def get_event_file(event)
-      yaml = {}
-      yaml.merge!(Hash[YAML::load(open("data/event.yaml")).map { |k, v| [k.to_sym, v] }])[event.to_sym]
     end
   end
 end

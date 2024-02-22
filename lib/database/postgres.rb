@@ -5,7 +5,7 @@ module Database
 
     attr_reader :configuration, :postgres
     def initialize
-      @configuration = Util::Configuration.new.get(:postgres)
+      @configuration = Util::Configuration.new.get(:postgres).verify(:password, :user, :host, :port, :database)
     end
 
     # Backup the database and save it on the backup folder set in the
@@ -40,7 +40,7 @@ module Database
     def restore(file_name, debug: false)
       file_path = File.join(backup_folder, file_name)
 
-      cmd = "PGPASSWORD='#{@configuration['password']}' psql -U '#{@configuration['user']}' -h '#{@configuration['host']}' -p '#{@configuration['port']}' -d '#{@configuration['database']}' -f '#{file_path}' #{output_redirection}"
+      cmd = "PGPASSWORD='#{@configuration['password']}' psql -U '#{@configuration['user']}' -h '#{@configuration['host']}' -p '#{@configuration['port']}' -d '#{@configuration['database']}' -f '#{file_path}'<"
       debug ? system(cmd) : system(cmd, err: File::NULL)
 
       file_path
@@ -62,14 +62,12 @@ module Database
     end
 
     def file_suffix
-      return if configuration.file_suffix.empty?
-
       @file_suffix ||= "_#{@configuration['database']}"
     end
 
     def backup_folder
       @backup_folder ||= begin
-        File.join(Rails.root, configuration.backup_folder).tap do |folder|
+        File.join(Rails.root, "backup").tap do |folder|
           FileUtils.mkdir_p(folder)
         end
       end
