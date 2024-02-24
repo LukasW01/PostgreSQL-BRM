@@ -7,7 +7,7 @@ module Storage
 
     attr_reader :configuration, :s3
     def initialize
-      @configuration = Util::Configuration.new.get(:s3).verify(:access_key, :secret_access_key, :provider, :region, :endpoint)
+      @configuration = Util::Configuration.new.get_key(:s3).verify(:access_key, :secret_access_key, :provider, :region, :endpoint)
       @s3 = Fog::Storage.new(
         provider: @configuration['provider'], region: @configuration['region'],
         aws_access_key_id: @configuration['access_key'], aws_secret_access_key: @configuration['secret_access_key'],
@@ -45,7 +45,7 @@ module Storage
       remote_file_path = File.join(remote_path, file_name)
       local_file_path = File.join(backup_folder, file_name)
 
-      file_from_storage = remote_directory.files.get(remote_file_path)
+      file_from_storage = remote_directory.files.get_key(remote_file_path)
 
       prepare_local_folder(local_file_path)
       create_local_file(local_file_path, file_from_storage)
@@ -73,7 +73,7 @@ module Storage
     private
     
     def remote_directory
-      @remote_directory ||= s3.directories.get(bucket, prefix: remote_path)
+      @remote_directory ||= s3.directories.get_key(bucket, prefix: remote_path)
     end
 
     def remote_file

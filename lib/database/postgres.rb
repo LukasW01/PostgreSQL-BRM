@@ -1,11 +1,11 @@
-require_relative '../util/configuration'
+require_relative '../configuration/configuration'
 
 module Database
   class Postgres
 
     attr_reader :configuration, :postgres
     def initialize
-      @configuration = Util::Configuration.new.get(:postgres).verify(:password, :user, :host, :port, :database)
+      @configuration = Util::Configuration.new.get_key(:postgres).verify(:password, :user, :host, :port, :database)
     end
 
     # Backup the database and save it on the backup folder set in the

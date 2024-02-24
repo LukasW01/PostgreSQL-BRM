@@ -14,3 +14,4 @@ restore:
   description: "This message tells you that the rake task have been executed successfully."
   status: "Sucess! ✅"
   info: The restore for the database(s) was sucessfull (%s)"
+  schedule: "After this restore, the next backup is scheduled to occur on %s."
