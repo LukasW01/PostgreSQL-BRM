@@ -1,4 +1,4 @@
-require_relative '../configuration/configuration'
+require_relative '../configuration/env'
 
 module Database
   class Postgres

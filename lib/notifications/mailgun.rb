@@ -1,6 +1,5 @@
 require 'mailgun-ruby'
-require_relative '../util/guration/configuration'
-require 'dry/schema'
+require_relative '../configuration/env'
 
 module Notifications
   class MailGun
@@ -8,8 +7,8 @@ module Notifications
     attr_reader :configuration, :mailgun
     def initialize
       @mailgun = Mailgun::Client.new(@configuration['api_key'], @configuration['mailgun_domain'])
-      @configuration = configuration.get_key(:mailgun)
-      @database = configuration.get_key(:postgres)
+      @configuration = Env::Env.new.get_key(:mailgun)
+      @database = Env::Env.new.get_key(:postgres)
     end
 
     # Send an email through Mailgun.
@@ -22,24 +21,28 @@ module Notifications
         {
           from: "Postgres-BRM <#{@configuration['from']}>", to: @configuration['to'],
           subject: "pg_backup - #{event_files['status']}",
-          text: "#{event_files['description']} \n\n#{event_files['info'].replace('%s', @database['database'])} \n\n#{event_files['schedule'].replace('%s', cronex.description)}" 
+          text: "#{event_files['description']} \n\n#{event_files['info'].gsub('%s', databases)} \n\n#{event_files['schedule'].gsub('%s', cronex)}" 
         }
       )
     end
     
     private
 
+    # load event.yaml file and return the event hash
     def get_event_file(event)
       yaml = {}
       yaml.merge!(Hash[YAML::load(open("data/event.yaml")).map { |k, v| [k.to_sym, v] }])[event.to_sym]
     end
 
-    def cronex
-      @cronex ||= Cronex::ExpressionDescriptor.new(ENV['SCHEDULE'])
+    # search for all databases in @database hash and join them with a comma
+    def databases
+      @database.values.map { |db| db['database'] }.join(', ')
     end
 
-    def configuration
-      @configuration ||= Util::Configuration.new
+    # cronex gem to parse cron expressions
+    # @daily like expressions are not supported
+    def cronex
+      Cronex::ExpressionDescriptor.new(ENV['SCHEDULE']).description
     end
   end
 end

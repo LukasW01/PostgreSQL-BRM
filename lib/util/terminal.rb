@@ -1,8 +1,6 @@
 require 'pastel'
 require 'tty-spinner'
 require 'tty-box'
-require 'tty-table'
-require 'tty-config'
 
 
 module Util

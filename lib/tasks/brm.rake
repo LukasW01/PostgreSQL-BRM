@@ -13,13 +13,12 @@ namespace :postgresql_backup do
   task :dump do
     title = pastel.yellow.bold('POSTGRESQL DATABASE BACKUP')
     terminal.box(title)
-    disclaimer.show(title: title, texts: configuration_to_text)
 
-    file_path = Util::Terminal.spinner('Backing up database') { db.dump }
+    file_path = terminal.spinner('Backing up database') { db.dump }
 
     if configuration.s3?
-      Util::Terminal.spinner('Uploading file') { storage.upload(file_path) }
-      Util::Terminal.spinner('Deleting local file') { File.delete(file_path) } if File.exist?(file_path)
+      terminal.spinner('Uploading file') { storage.upload(file_path) }
+      terminal.spinner('Deleting local file') { File.delete(file_path) } if File.exist?(file_path)
     end
 
     puts ''
@@ -29,24 +28,24 @@ namespace :postgresql_backup do
   desc 'Restores a database backup into the database'
   task :restore do
     title = pastel.green('POSTGRESQL DATABASE RESTORE')
-    disclaimer.show(title: title, texts: configuration_to_text)
+    terminal.box(title)
     
     
     local_file_path = ''
-    files = Util::Terminal.spinner('Loading backups list') { list_backup_files }
+    files = terminal.spinner('Loading backups list') { list_backup_files }
 
     if files.present?
       puts ''
       file_name = prompt.select('Choose the file to restore', files)
       puts ''
 
-      local_file_path = Util::Terminal.spinner('Downloading file') { storage.download(file_name) } if configuration.s3?
+      local_file_path = terminal.spinner('Downloading file') { storage.download(file_name) } if configuration.s3?
 
       db.reset
 
-      Util::Terminal.spinner('Restoring data') { db.restore(file_name) }
+      terminal.spinner('Restoring data') { db.restore(file_name) }
 
-      Util::Terminal.spinner('Deleting local file') { File.delete(local_file_path) } if configuration.s3?
+      terminal.spinner('Deleting local file') { File.delete(local_file_path) } if configuration.s3?
 
       puts ''
       puts pastel.green('All done.')
@@ -60,14 +59,9 @@ namespace :postgresql_backup do
   desc 'Lists all defined configurations'
   task :config do
     title = pastel.yellow.bold('POSTGRESQL DATABASE BACKUP')
-    terminal.box("#{title} - Configuration: #{configuration.get_key(:postgres).to_s}")
+    terminal.box(title)
     
-    if configuration.get_key(:postgres).is_a?(Hash) && configuration.get_key(:postgres).keys.length > 1
-      puts "More than one database is defined."
-    else
-      puts "Only one database is defined or configuration is not in expected format."
-    end
-    
+    terminal.spinner('Send a message to Discord') { discord.send(:backup) }
 
     end
 
@@ -91,10 +85,6 @@ namespace :postgresql_backup do
 
     def mailgun
       @mailgun ||= Notifications::Mailgun.new
-    end
-
-    def configuration
-      @configuration ||= Util::Configuration.new
     end
 
     def terminal
