@@ -31,6 +31,8 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
 
     terminal.spinner('Testing') { puts 'Testing' }
     terminal.spinner('Sending discord notification') { discord.send(:backup) }
+    terminal.spinner('Sending pushover notification') { pushover.send(:backup) }
+    terminal.spinner('Sending mailgun notification') { mailgun.send(:backup) }
   end
 
   desc 'Restores a database backup into the database'

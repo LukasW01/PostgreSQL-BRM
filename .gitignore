@@ -21,5 +21,6 @@ env.yaml
 # Ignore logfiles and tempfiles
 *.log
 *.tmp
-
+log/
+tmp/
 

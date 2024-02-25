@@ -1,18 +1,19 @@
-require 'yaml'
-require 'cronex'
-require 'mailgun-ruby'
 require_relative '../configuration/env'
+require_relative '../util/file'
+require 'cronex'
+require 'logger'
+require 'mailgun-ruby'
 
 module Notifications
   class MailGun
     attr_reader :configuration, :mailgun
 
     def initialize
+      @file = Util::File.new
       @configuration = Env.new.get_key(:mailgun)
       @database = Env.new.get_key(:postgres)
       @mailgun = Mailgun::Client.new(@configuration['api_key'], @configuration['mailgun_domain'])
       @logger = Logger.new('log/ruby.log')
-      @file = Util::File.new
     end
 
     # Send an email through Mailgun.

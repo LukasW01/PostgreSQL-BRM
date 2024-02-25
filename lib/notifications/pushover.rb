@@ -1,20 +1,22 @@
-require 'pushover'
-require 'yaml'
-require 'cronex'
 require_relative '../configuration/env'
+require_relative '../util/file'
+require 'pushover'
+require 'cronex'
+require 'logger'
 
 module Notifications
   class PushOver
     attr_reader :configuration, :pushover
 
     def initialize
+      @file = Util::File.new
       @configuration = Env.new.get_key(:pushover)
       @database = Env.new.get_key(:postgres)
       @logger = Logger.new('log/ruby.log')
     end
 
     def send(event, priority = 0)
-      event_file = get_event_file(event)
+      event_file = @file.event(event)
 
       @logger.info("Sending message to Pushover for event: #{event}")
       begin
@@ -32,12 +34,6 @@ module Notifications
     end
 
     private
-
-    # load event.yaml file and return the event hash
-    def get_event_file(event)
-      yaml = {}
-      yaml.merge!(Hash[YAML::load(open("data/event.yaml")).map { |k, v| [k.to_sym, v] }])[event.to_sym]
-    end
 
     # search for all databases in @database hash and join them with a comma
     def databases

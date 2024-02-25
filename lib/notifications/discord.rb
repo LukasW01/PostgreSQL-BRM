@@ -1,5 +1,5 @@
 require_relative '../configuration/env'
-require 'yaml'
+require_relative '../util/file'
 require 'discordrb/webhooks'
 require 'cronex'
 require 'logger'
@@ -9,11 +9,11 @@ module Notifications
     attr_reader :configuration, :discord
 
     def initialize
+      @file = Util::File.new
       @configuration = Env.new.get_key(:discord)
       @database = Env.new.get_key(:postgres)
       @discord = Discordrb::Webhooks::Client.new(url: @configuration['webhook'].freeze)
       @logger = Logger.new('log/ruby.log')
-      @file = Util::File.new
     end
 
     def send(event)
