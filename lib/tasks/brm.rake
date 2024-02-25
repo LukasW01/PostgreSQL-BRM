@@ -18,9 +18,6 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
   task :test do
     title = pastel.yellow.bold('Test')
     terminal.box(title)
-
-    terminal.spinner('Testing') { puts 'Testing' }
-    terminal.spinner('Uploading file') { storage.upload('log/ruby.log') }
   end
 
   desc 'Restores a database backup into the database'
@@ -58,10 +55,14 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
     @terminal ||= Util::Terminal.new
   end
 
+  def configuration
+    @configuration ||= Env.new
+  end
+
   def configuration_to_text
     [
-      show_config_for('Database', configuration.get_key(:postgres)),
-      show_config_for('S3', configuration.get_key(:s3))
+      show_config_for('S3', configuration.get_key(:s3).is_a?(Hash) ? 'True' : 'False'),
+      show_config_for('Database', configuration.get_key(:database).is_a?(Hash) ? 'True' : 'False')
     ].compact
   end
 

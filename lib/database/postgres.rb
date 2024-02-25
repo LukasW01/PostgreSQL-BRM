@@ -1,11 +1,14 @@
 require_relative '../configuration/env'
+require 'pathname'
+require 'logger'
 
 module Database
   class Postgres
+    attr_reader :configuration
 
-    attr_reader :configuration, :postgres
     def initialize
-      @configuration = Util::Configuration.new.get_key(:postgres)
+      @configuration = Env.new.get_key(:postgres)
+      @logger = logger.new('log/ruby.log')
     end
 
     # Backup the database and save it on the backup folder set in the
@@ -14,11 +17,10 @@ module Database
     # `debug: true` in the arguments of the function.
     #
     # Return the full path of the backup file created in the disk.
-    def dump(debug: false)
+    def dump
       file_path = File.join(backup_folder, "#{file_name}#{file_suffix}.sql")
 
-      cmd = "PGPASSWORD='#{@configuration['password']}' pg_dump -F p -v -O -U '#{@configuration['user']}' -h '#{@configuration['host']}' -p '#{@configuration['port']}' -d '#{@configuration['database']}' -f '#{file_path}' "
-      debug ? system(cmd) : system(cmd, err: File::NULL)
+      system("PGPASSWORD='#{@configuration['password']}' pg_dump -F p -v -O -U '#{@configuration['user']}' -h '#{@configuration['host']}' -p '#{@configuration['port']}' -d '#{@configuration['database']}' -f '#{file_path}' ")
 
       file_path
     end
@@ -34,25 +36,26 @@ module Database
     #
     # If you need to make the command more verbose, pass
     # `debug: true` in the arguments of the function.
-    def restore(file_name, debug: false)
+    def restore(file_name)
       file_path = File.join(backup_folder, file_name)
 
-      cmd = "PGPASSWORD='#{@configuration['password']}' psql -U '#{@configuration['user']}' -h '#{@configuration['host']}' -p '#{@configuration['port']}' -d '#{@configuration['database']}' -f '#{file_path}'<"
-      debug ? system(cmd) : system(cmd, err: File::NULL)
+      system("PGPASSWORD='#{@configuration['password']}' psql -U '#{@configuration['user']}' -h '#{@configuration['host']}' -p '#{@configuration['port']}' -d '#{@configuration['database']}' -f '#{file_path}'<")
 
       file_path
     end
 
     # List all backup files from the local backup folder.
-    #
-    # Return a list of strings containing only the file names.
     def list_files
       Dir.glob("#{backup_folder}/*.sql")
-        .reject { |f| File.directory?(f) }
-        .map { |f| Pathname.new(f).basename }
+         .reject { |f| File.directory?(f) }
+         .map { |f| Pathname.new(f).basename }
     end
 
     private
+
+    def backup_folder
+      @backup_folder ||= Dir.mkdir(File.join(Dir.pwd, 'backup')) unless Dir.exist?(File.join(Dir.pwd, 'backup'))
+    end
 
     def file_name
       @file_name ||= Time.current.strftime('%Y%m%d%H%M%S')
@@ -61,14 +64,5 @@ module Database
     def file_suffix
       @file_suffix ||= "_#{@configuration['database']}"
     end
-
-    def backup_folder
-      @backup_folder ||= begin
-        File.join(Rails.root, "backup").tap do |folder|
-          FileUtils.mkdir_p(folder)
-        end
-      end
-    end
-
   end
 end
