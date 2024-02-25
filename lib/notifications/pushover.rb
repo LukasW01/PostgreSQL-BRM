@@ -6,8 +6,8 @@ module Notifications
     
     attr_reader :configuration, :pushover
     def initialize
-      @configuration = configuration.get_key(:pushover)
-      @database = configuration.get_key(:postgres)
+      @configuration = Env.new.get_key(:pushover)
+      @database = Env.new.get_key(:postgres)
     end
 
     def send(event, priority)
@@ -16,7 +16,7 @@ module Notifications
       Pushover::Message.new(
         token: @configuration['app_token'], user: @configuration['user_key'],
         title: "pg_backup - #{event_file['status']}",
-        message: "#{event_file['description']} \n\n#{event_file['info'].replace('%s', databases)} \n\n#{event_file['schedule'].replace('%s', cronex)}",
+        message: "#{event_file['description']} \n\n#{event_file['info'].gsub('%s', databases)} \n\n#{event_file['schedule'].gsub('%s', cronex)}",
         priority: priority, expire: 3600, retry: 60
       ).push
     end
@@ -37,7 +37,8 @@ module Notifications
     # cronex gem to parse cron expressions
     # @daily like expressions are not supported
     def cronex
-      Cronex::ExpressionDescriptor.new(ENV['SCHEDULE']).description
+      #Cronex::ExpressionDescriptor.new(ENV['SCHEDULE']).description
+      Cronex::ExpressionDescriptor.new("0 0 0 0 1").description
     end
   end
 end

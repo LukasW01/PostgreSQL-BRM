@@ -56,15 +56,6 @@ namespace :postgresql_backup do
     end
   end
 
-  desc 'Lists all defined configurations'
-  task :config do
-    title = pastel.yellow.bold('POSTGRESQL DATABASE BACKUP')
-    terminal.box(title)
-    
-    terminal.spinner('Send a message to Discord') { discord.send(:backup) }
-
-    end
-
     private
 
     def db
@@ -80,11 +71,11 @@ namespace :postgresql_backup do
     end
 
     def pushover
-      @pushover ||= Notifications::Pushover.new
+      @pushover ||= Notifications::PushOver.new
     end
 
     def mailgun
-      @mailgun ||= Notifications::Mailgun.new
+      @mailgun ||= Notifications::MailGun.new
     end
 
     def terminal

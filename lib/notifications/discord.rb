@@ -7,8 +7,8 @@ module Notifications
   attr_reader :configuration, :discord
   class Discord
     def initialize
-      @configuration = Env::Env.new.get_key(:discord)
-      @database = Env::Env.new.get_key(:postgres)
+      @configuration = Env.new.get_key(:discord)
+      @database = Env.new.get_key(:postgres)
       @discord = Discordrb::Webhooks::Client.new(url: @configuration['webhook'].freeze)
     end
 
@@ -45,7 +45,8 @@ module Notifications
     # cronex gem to parse cron expressions
     # @daily like expressions are not supported
     def cronex
-      Cronex::ExpressionDescriptor.new(ENV['SCHEDULE']).description
+      #Cronex::ExpressionDescriptor.new(ENV['SCHEDULE']).description
+      Cronex::ExpressionDescriptor.new("0 0 0 0 1").description
     end
   end
 end

@@ -11,7 +11,8 @@ module Storage
       @s3 = Fog::Storage.new(
         provider: @configuration['provider'], region: @configuration['region'],
         aws_access_key_id: @configuration['access_key'], aws_secret_access_key: @configuration['secret_access_key'],
-        endpoint: @configuration['endpoint']
+        endpoint: @configuration['endpoint'],
+        enable_signature_v4_streaming: false
       )
     end
 

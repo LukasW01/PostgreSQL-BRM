@@ -6,9 +6,9 @@ module Notifications
 
     attr_reader :configuration, :mailgun
     def initialize
+      @configuration = Env.new.get_key(:mailgun)
+      @database = Env.new.get_key(:postgres)
       @mailgun = Mailgun::Client.new(@configuration['api_key'], @configuration['mailgun_domain'])
-      @configuration = Env::Env.new.get_key(:mailgun)
-      @database = Env::Env.new.get_key(:postgres)
     end
 
     # Send an email through Mailgun.
@@ -42,7 +42,8 @@ module Notifications
     # cronex gem to parse cron expressions
     # @daily like expressions are not supported
     def cronex
-      Cronex::ExpressionDescriptor.new(ENV['SCHEDULE']).description
+      #Cronex::ExpressionDescriptor.new(ENV['SCHEDULE']).description
+      Cronex::ExpressionDescriptor.new("0 0 0 0 1").description
     end
   end
 end
