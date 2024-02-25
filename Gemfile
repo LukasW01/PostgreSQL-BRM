@@ -5,7 +5,7 @@ ruby '3.3.0'
 group :development do
   gem 'bump', '~> 0.10.0'
   gem 'rails', '~> 7.1'
-  gem 'rake', '~> 12.1'
+  gem 'rake', '~> 13.1'
   gem 'rspec', '~> 3.13.0'
   gem 'rubocop', '~> 1.60.2'
   gem 'simplecov', '~> 0.22.0'
