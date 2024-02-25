@@ -8,7 +8,7 @@ require 'tty-prompt'
 require 'tty-spinner'
 require 'pastel'
 
-namespace :postgresql_backup do
+namespace :pg_brm do # rubocop:disable Metrics/BlockLength
   desc 'Dumps the database'
   task :dump do
     title = pastel.yellow.bold('POSTGRESQL DATABASE BACKUP')
@@ -21,16 +21,24 @@ namespace :postgresql_backup do
       terminal.spinner('Deleting local file') { File.delete(file_path) } if File.exist?(file_path)
     end
 
-    puts ''
-    puts pastel.green('All done.')
+    puts pastel.green('\nAll done.')
+  end
+
+  desc 'Test'
+  task :test do
+    title = pastel.yellow.bold('POSTGRESQL DATABASE BACKUP')
+    terminal.box(title)
+
+    terminal.spinner('Testing') { puts 'Testing' }
+    terminal.spinner('Sending discord notification') { discord.send(:backup) }
+    terminal.spinner('Sending mailgun notification') { mailgun.send(:backup) }
   end
 
   desc 'Restores a database backup into the database'
   task :restore do
     title = pastel.green('POSTGRESQL DATABASE RESTORE')
     terminal.box(title)
-    
-    
+
     local_file_path = ''
     files = terminal.spinner('Loading backups list') { list_backup_files }
 
@@ -56,57 +64,53 @@ namespace :postgresql_backup do
     end
   end
 
-    private
+  private
 
-    def db
-      @db ||= Database::Postgres.new
-    end
+  def db
+    @db ||= Database::Postgres.new
+  end
 
-    def storage
-      @storage ||= Storage::S3.new
-    end
+  def storage
+    @storage ||= Storage::S3.new
+  end
 
-    def discord
-      @discord ||= Notifications::Discord.new
-    end
+  def discord
+    @discord ||= Notifications::Discord.new
+  end
 
-    def pushover
-      @pushover ||= Notifications::PushOver.new
-    end
+  def pushover
+    @pushover ||= Notifications::PushOver.new
+  end
 
-    def mailgun
-      @mailgun ||= Notifications::MailGun.new
-    end
+  def mailgun
+    @mailgun ||= Notifications::MailGun.new
+  end
 
-    def terminal
-      @disclaimer ||= Util::Terminal.new
-    end
+  def pastel
+    @pastel ||= Pastel.new
+  end
 
-    def pastel
-      @pastel ||= Pastel.new
-    end
+  def terminal
+    @terminal ||= Util::Terminal.new
+  end
 
-    def prompt
-      @prompt ||= TTY::Prompt.new
-    end
+  def configuration_to_text
+    [
+      show_config_for('Database', configuration.get_key(:postgres)),
+      show_config_for('S3', configuration.get_key(:s3))
+    ].compact
+  end
 
-    def configuration_to_text
-      [
-        show_config_for('Database', configuration.get_key(:postgres)),
-        show_config_for('S3', configuration.get_key(:s3)),
-      ].compact
-    end
+  def show_config_for(text, value)
+    return if value.empty?
 
-    def show_config_for(text, value)
-      return if value.empty?
+    "* #{pastel.yellow.bold(text)}: #{value}"
+  end
 
-      "* #{pastel.yellow.bold(text)}: #{value}"
+  def list_backup_files
+    @list_backup_files ||= begin
+      source = configuration.get_key(:s3) ? storage : db
+      source.list_files
     end
-
-    def list_backup_files
-      @list_backup_files ||= begin
-                               source = configuration.get_key(:s3) ? storage : db
-                               source.list_files
-                             end
-    end
-    end
+  end
+end

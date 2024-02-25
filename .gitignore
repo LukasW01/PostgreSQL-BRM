@@ -4,11 +4,11 @@
 # OS
 .DS_Store
 
-# Environment normalization
+# Environment
 .env
 env.yaml
 
-# Test coverage (spec) directory
+# Test coverage (spec)
 /coverage/
 /spec/tmp
 
@@ -18,9 +18,8 @@ env.yaml
 *.orig
 .rvmrc
 
-# Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
+# Ignore logfiles and tempfiles
+log/
+tmp/
+
 

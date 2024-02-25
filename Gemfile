@@ -14,6 +14,7 @@ end
 group :production, :test do
   gem 'fog-aws', '>= 3.13', '< 3.22'
   gem 'pastel', '~> 0.8.0'
+  gem 'logger', '~> 1.6'
   gem 'tty-prompt', '~> 0.23.0'
   gem 'tty-spinner', '~> 0.9.3'
   gem 'tty-box', '~> 0.7.0'

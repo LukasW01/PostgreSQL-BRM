@@ -1,0 +1,5 @@
+version: 0.5
+schedule: "0 0 * * *"
+timezone: "Europe/Amsterdam"
+language: "en"
+name: "pg_brm"

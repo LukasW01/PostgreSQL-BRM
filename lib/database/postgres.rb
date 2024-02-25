@@ -5,7 +5,7 @@ module Database
 
     attr_reader :configuration, :postgres
     def initialize
-      @configuration = Util::Configuration.new.get_key(:postgres).verify(:password, :user, :host, :port, :database)
+      @configuration = Util::Configuration.new.get_key(:postgres)
     end
 
     # Backup the database and save it on the backup folder set in the
@@ -24,9 +24,6 @@ module Database
     end
 
     # Drop the database and recreate it.
-    #
-    # This is done by invoking two Active Record's rake tasks:
-    #
     # * rake db:drop
     # * rake db:create
     def reset
