@@ -13,10 +13,6 @@ module Database
 
     # Backup the database and save it on the backup folder set in the
     # configuration.
-    # If you need to make the command more verbose, pass
-    # `debug: true` in the arguments of the function.
-    #
-    # Return the full path of the backup file created in the disk.
     def dump
       file_path = File.join(backup_folder, "#{file_name}#{file_suffix}.sql")
 
@@ -33,9 +29,6 @@ module Database
     end
 
     # Restore the database from a file in the file system.
-    #
-    # If you need to make the command more verbose, pass
-    # `debug: true` in the arguments of the function.
     def restore(file_name)
       file_path = File.join(backup_folder, file_name)
 

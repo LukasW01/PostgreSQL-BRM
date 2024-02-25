@@ -10,20 +10,10 @@ require 'pastel'
 
 namespace :pg_brm do # rubocop:disable Metrics/BlockLength
   desc 'Dumps the database'
-  task :dump do
-    terminal.box('wip')
-  end
-
-  desc 'Test'
-  task :test do
-    title = pastel.yellow.bold('Test')
-    terminal.box(title)
-  end
+  task :dump do end
 
   desc 'Restores a database backup into the database'
-  task :restore do
-    terminal.box('wip')
-  end
+  task :restore do end
 
   private
 

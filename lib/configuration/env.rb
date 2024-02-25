@@ -12,9 +12,9 @@ class Env
   attr_reader :options
 
   def initialize
-    @logger = Logger.new('log/ruby.log')
     @options = {}
     load_yaml
+    @logger = Logger.new('log/ruby.log')
   end
 
   def get_key(key)
