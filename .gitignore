@@ -1,0 +1,29 @@
+# IDE
+.idea
+
+# OS
+.DS_Store
+
+# Environment
+.env
+env.yaml
+
+# Test coverage (spec)
+/coverage/
+/spec/tmp
+
+# Ruby
+*.rbc
+*.gem
+*.orig
+.rvmrc
+
+# Ignore logfiles and tempfiles
+*.log
+*.tmp
+log/
+tmp/
+
+# App
+backup/
+*.sql

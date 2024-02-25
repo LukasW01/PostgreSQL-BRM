@@ -1,0 +1,18 @@
+Style/Documentation:
+  Enabled: false
+
+Style/RescueModifier:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 30
+
+Metrics/MethodLength:
+  Max: 30
+
+Layout/LineLength:
+  Max: 300
+
