@@ -19,7 +19,7 @@ env.yaml
 .rvmrc
 
 # Ignore logfiles and tempfiles
-log/
-tmp/
+*.log
+*.tmp
 
 
