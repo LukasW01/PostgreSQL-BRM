@@ -10,8 +10,8 @@ module Notifications
 
     def initialize
       @file = Util::File.new
-      @configuration = Env.new.get_key(:pushover)
-      @database = Env.new.get_key(:postgres)
+      @configuration = Env::Env.new.get_key(:pushover)
+      @database = Env::Env.new.get_key(:postgres)
       @logger = Logger.new('log/ruby.log')
     end
 
@@ -24,7 +24,7 @@ module Notifications
           token: @configuration['app_token'], user: @configuration['user_key'],
           title: "pg_backup - #{event_file['status']}",
           message: "#{event_file['description']} \n\n#{event_file['info'].gsub('%s', databases)} \n\n#{event_file['schedule'].gsub('%s', cronex)}",
-          priority: priority, expire: 3600, retry: 60
+          priority:, expire: 3600, retry: 60
         ).push
       rescue StandardError => e
         @logger.error("Error sending message to Pushover for event: #{event}")

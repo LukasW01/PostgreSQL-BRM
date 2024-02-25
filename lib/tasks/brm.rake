@@ -46,7 +46,7 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
   end
 
   def configuration
-    @configuration ||= Env.new
+    @configuration ||= Env::Env.new
   end
 
   def configuration_to_text

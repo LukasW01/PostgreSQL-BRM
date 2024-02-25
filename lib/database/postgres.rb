@@ -7,7 +7,7 @@ module Database
     attr_reader :configuration
 
     def initialize
-      @configuration = Env.new.get_key(:postgres)
+      @configuration = Env::Env.new.get_key(:postgres)
       @logger = logger.new('log/ruby.log')
     end
 

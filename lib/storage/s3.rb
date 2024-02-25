@@ -10,7 +10,7 @@ module Storage
     attr_reader :configuration, :s3
 
     def initialize
-      @configuration = Env.new.get_key(:s3)
+      @configuration = Env::Env.new.get_key(:s3)
       @s3 = Aws::S3::Client.new(
         access_key_id: configuration['access_key_id'], secret_access_key: configuration['secret_access_key'],
         endpoint: configuration['endpoint'],
