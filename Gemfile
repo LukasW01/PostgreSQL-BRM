@@ -13,6 +13,7 @@ end
 
 group :production, :test do
   gem 'fog-aws', '>= 3.13', '< 3.22'
+  gem 'aws-sdk-s3', '~> 1.143'
   gem 'pastel', '~> 0.8.0'
   gem 'logger', '~> 1.6'
   gem 'tty-prompt', '~> 0.23.0'

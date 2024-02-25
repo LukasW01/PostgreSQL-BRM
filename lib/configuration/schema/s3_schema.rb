@@ -6,9 +6,9 @@ module Schema
       required(:s3).value(:hash) do
         required(:access_key_id).filled(:string)
         required(:secret_access_key).filled(:string)
-        required(:provider).filled(:string)
-        required(:region).filled(:string)
         required(:endpoint).filled(:string)
+        required(:bucket).filled(:string)
+        required(:region).filled(:string)
       end
     end
 
