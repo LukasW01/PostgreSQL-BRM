@@ -1,12 +1,6 @@
 require 'yaml'
-require 'dry/schema'
-require 'dry/validation'
 require 'logger'
-require_relative 'schema/s3_schema'
-require_relative 'schema/postgres_schema'
-require_relative 'schema/mailgun_schema'
-require_relative 'schema/pushover_schema'
-require_relative 'schema/discord_schema'
+require_relative 'validation'
 
 module Env
   class Env
@@ -20,10 +14,6 @@ module Env
     def get_key(key)
       Validation.new.validate([key])
       @options[key]
-    end
-
-    def get
-      @options
     end
 
     private

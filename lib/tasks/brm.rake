@@ -51,12 +51,12 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
 
   def configuration_to_text
     [
-      show_config_for('S3', configuration.get_key(:s3).is_a?(Hash) ? 'True' : 'False'),
-      show_config_for('Database', configuration.get_key(:database).is_a?(Hash) ? 'True' : 'False')
+      list_config('S3', configuration.get_key(:s3).is_a?(Hash) ? 'True' : 'False'),
+      list_config('Database', configuration.get_key(:database).is_a?(Hash) ? 'True' : 'False')
     ].compact
   end
 
-  def show_config_for(text, value)
+  def list_config(text, value)
     return if value.empty?
 
     "* #{pastel.yellow.bold(text)}: #{value}"

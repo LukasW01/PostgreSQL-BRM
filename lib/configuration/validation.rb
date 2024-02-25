@@ -11,7 +11,7 @@ module Env
   class Validation
     def initialize
       @logger = Logger.new('log/ruby.log')
-      @options = Env::Env.new.get
+      @options = Env.new.options
     end
 
     def validate(key)
