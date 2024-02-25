@@ -1,7 +1,29 @@
+image: ruby:latest
+
 stages:
 - test
+- lint
+
+cache:
+  paths:
+    - vendor/ruby
+
+before_script:
+  - ruby -v 
+  - bundle install -j $(nproc)
+
 sast:
   stage: test
 include:
 - template: Security/SAST.gitlab-ci.yml
+
+rubocop:
+  stage: lint
+  script:
+    - rubocop
+
+#rspec:
+#  stage: test 
+#  script:
+#    - rspec spec
 
