@@ -99,7 +99,9 @@ GEM
     concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
     crass (1.0.6)
-    cronex (0.2.0)
+    cronex (0.13.0)
+      tzinfo
+      unicode
     date (3.3.4)
     diff-lcs (1.5.1)
     discordrb (3.5.0)
@@ -348,6 +350,7 @@ GEM
       tty-screen (~> 0.8)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    unicode (0.4.4.4)
     unicode-display_width (2.5.0)
     unicode_utils (1.4.0)
     webrick (1.8.1)
@@ -368,7 +371,7 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk-s3 (~> 1.143)
   bump (~> 0.10.0)
-  cronex (~> 0.2.0)
+  cronex (~> 0.13.0)
   discordrb (~> 3)
   dry-schema
   dry-validation (~> 1.10)

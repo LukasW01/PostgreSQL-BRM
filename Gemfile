@@ -23,7 +23,7 @@ group :production, :test do
   gem 'tty-config', '~> 0.6.0'
   gem 'pushover', '~> 3.0'
   gem 'discordrb', '~> 3'
-  gem 'cronex', '~> 0.2.0'
+  gem 'cronex', '~> 0.13.0'
   gem 'dry-validation', '~> 1.10'
   gem 'dry-schema'
   gem 'mailgun-ruby', '~> 1.2.14'
