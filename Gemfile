@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 ruby '3.3.0'
 
@@ -12,19 +12,19 @@ group :development do
 end
 
 group :production, :test do
-  gem 'fog-aws', '>= 3.13', '< 3.22'
   gem 'aws-sdk-s3', '~> 1.143'
-  gem 'pastel', '~> 0.8.0'
+  gem 'cronex', '~> 0.2.0'
+  gem 'discordrb', '~> 3'
+  gem 'dry-schema'
+  gem 'dry-validation', '~> 1.10'
+  gem 'fog-aws', '>= 3.13', '< 3.22'
   gem 'logger', '~> 1.6'
+  gem 'mailgun-ruby', '~> 1.2.14'
+  gem 'pastel', '~> 0.8.0'
+  gem 'pushover', '~> 3.0'
+  gem 'tty-box', '~> 0.7.0'
+  gem 'tty-config', '~> 0.6.0'
   gem 'tty-prompt', '~> 0.23.0'
   gem 'tty-spinner', '~> 0.9.3'
-  gem 'tty-box', '~> 0.7.0'
   gem 'tty-table', '~> 0.12.0'
-  gem 'tty-config', '~> 0.6.0'
-  gem 'pushover', '~> 3.0'
-  gem 'discordrb', '~> 3'
-  gem 'cronex', '~> 0.2.0'
-  gem 'dry-validation', '~> 1.10'
-  gem 'dry-schema'
-  gem 'mailgun-ruby', '~> 1.2.14'
 end

@@ -27,7 +27,7 @@ module Storage
       begin
         @s3.put_object(
           key: file_name.to_s,
-          body: IO.read(file_path),
+          body: File.read(file_path),
           bucket: configuration['bucket'],
           content_type: 'application/octet-stream'
         )

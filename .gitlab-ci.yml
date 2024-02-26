@@ -1,5 +1,3 @@
-image: ruby:latest
-
 stages:
 - test
 - lint
@@ -8,10 +6,6 @@ cache:
   paths:
     - vendor/ruby
 
-before_script:
-  - ruby -v 
-  - bundle install -j $(nproc)
-
 sast:
   stage: test
 include:
@@ -19,11 +13,24 @@ include:
 
 rubocop:
   stage: lint
+  before_script:
+    - ruby -v
+    - bundle install -j $(nproc)
   script:
     - rubocop
+  image: ruby:latest
 
 #rspec:
 #  stage: test 
+#  before_script:
+#    - ruby -v
+#    - bundle install -j $(nproc)
 #  script:
-#    - rspec spec
-
+#    - bundle exec rspec spec --format RspecJunitFormatter --out coverage/rspec.xml
+#  artifacts:
+#    when: always
+#    paths:
+#      - coverage/
+#    reports:
+#      junit: coverage/rspec.xml
+#  image: ruby:latest

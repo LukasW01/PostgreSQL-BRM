@@ -43,7 +43,7 @@ module Notifications
     # cronex gem to parse cron expressions
     # @daily like expressions are not supported
     def cronex
-      Cronex::ExpressionDescriptor.new(ENV['SCHEDULE']).description rescue Cronex::ExpressionDescriptor.new(@file.app('schedule')).description
+      Cronex::ExpressionDescriptor.new(ENV.fetch('SCHEDULE', nil)).description rescue Cronex::ExpressionDescriptor.new(@file.app('schedule')).description
     end
   end
 end

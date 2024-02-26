@@ -17,7 +17,7 @@ module Schema
     end
 
     rule(:mailgun) do
-      key(%i[mailgun domain]).failure('domain must be a valid domain (e.g example.com)') unless /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,7}$/.match?(value[:domain])
+      key(%i[mailgun domain]).failure('domain must be a valid domain (e.g example.com)') unless /^[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,7}$/.match?(value[:domain])
     end
 
     rule(:mailgun) do
