@@ -17,7 +17,7 @@ rubocop:
     - ruby -v
     - bundle install -j $(nproc)
   script:
-    - rubocop
+    - bundler exec rubocop
   image: ruby:latest
 
 #rspec:
