@@ -4,9 +4,6 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
-Style/RescueModifier:
-  Enabled: false
-
 Style/FrozenStringLiteralComment:
   Enabled: false
 

@@ -12,8 +12,15 @@ module Env
     end
 
     def get_key(key)
-      Validation.new.validate([key])
+      Validation.new.validate(key)
       @options[key]
+    end
+
+    def get_each_key(_key)
+      @options.each_key do |_key|
+        Validation.new.validate(k)
+        yield k, @options[k]
+      end
     end
 
     private

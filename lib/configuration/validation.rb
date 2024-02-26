@@ -16,18 +16,15 @@ module Env
     end
 
     def validate(key)
-      key.each do |k|
-        @logger.info("Validating #{k}")
-        @logger.error("Validation failed for #{k}: #{validate_key(k).errors.to_h}") unless validate_key(k).success?
-        raise validate_key(k).errors.to_h.to_s unless validate_key(k).success?
-      end
+      @logger.error("Validation failed for #{key}: #{validate_key(key).errors.to_h}") unless validate_key(key).success?
+      raise validate_key(key).errors.to_h.to_s unless validate_key(key).success?
+
+      @logger.info("Validation passed for #{key}")
     end
 
     private
 
     def validate_key(key)
-      puts key
-      puts @env.options
       case key
       when :postgres
         Schema::PostgresSchema.new.call(@env.options)

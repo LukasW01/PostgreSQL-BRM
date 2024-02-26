@@ -4,6 +4,7 @@ require_relative '../storage/s3'
 require_relative '../notifications/discord'
 require_relative '../notifications/pushover'
 require_relative '../notifications/mailgun'
+require_relative '../util/file'
 require 'tty-prompt'
 require 'tty-spinner'
 require 'pastel'
@@ -47,6 +48,10 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
 
   def terminal
     @terminal ||= Util::Terminal.new
+  end
+
+  def file
+    @file ||= Util::File.new
   end
 
   def env

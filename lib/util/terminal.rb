@@ -11,7 +11,7 @@ module Util
     end
 
     def spinner(text)
-      spinner = TTY::Spinner.new("#{@pastel.yellow('[:spinner] ')}#{text}...")
+      spinner = TTY::Spinner.new("#{@pastel.blue('[:spinner] ')}#{text}...")
       spinner.auto_spin
       result = yield
       spinner.success(@pastel.green.bold('done.'))
