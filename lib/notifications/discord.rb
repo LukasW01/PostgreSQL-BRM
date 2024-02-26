@@ -6,13 +6,13 @@ require 'logger'
 
 module Notifications
   class Discord
-    attr_reader :configuration, :discord
+    attr_reader :env, :discord
 
     def initialize
       @file = Util::File.new
-      @configuration = Env::Env.new.get_key(:discord)
+      @env = Env::Env.new.get_key(:discord)
       @database = Env::Env.new.get_key(:postgres)
-      @discord = Discordrb::Webhooks::Client.new(url: @configuration['webhook'].freeze)
+      @discord = Discordrb::Webhooks::Client.new(url: @env['webhook'].freeze)
       @logger = Logger.new('log/ruby.log')
     end
 

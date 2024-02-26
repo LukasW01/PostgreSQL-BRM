@@ -7,14 +7,14 @@ require 'pathname'
 
 module Storage
   class S3
-    attr_reader :configuration, :s3
+    attr_reader :env, :s3
 
     def initialize
-      @configuration = Env::Env.new.get_key(:s3)
+      @env = Env::Env.new.get_key(:s3)
       @s3 = Aws::S3::Client.new(
-        access_key_id: configuration['access_key_id'], secret_access_key: configuration['secret_access_key'],
-        endpoint: configuration['endpoint'],
-        region: configuration['region']
+        access_key_id: @env['access_key_id'], secret_access_key: @env['secret_access_key'],
+        endpoint: @env['endpoint'],
+        region: @env['region']
       )
       @logger = Logger.new('log/ruby.log')
     end
@@ -28,7 +28,7 @@ module Storage
         @s3.put_object(
           key: file_name.to_s,
           body: File.read(file_path),
-          bucket: configuration['bucket'],
+          bucket: @env['bucket'],
           content_type: 'application/octet-stream'
         )
       rescue StandardError => e
@@ -47,7 +47,7 @@ module Storage
       begin
         @s3.get_object(
           response_target: file_path,
-          bucket: configuration['bucket'],
+          bucket: @env['bucket'],
           key: file_name
         )
       rescue StandardError => e

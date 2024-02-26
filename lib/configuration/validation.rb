@@ -1,6 +1,7 @@
 require 'dry/schema'
 require 'dry/validation'
 require 'logger'
+require_relative 'env'
 require_relative 'schema/s3_schema'
 require_relative 'schema/postgres_schema'
 require_relative 'schema/mailgun_schema'
@@ -11,7 +12,7 @@ module Env
   class Validation
     def initialize
       @logger = Logger.new('log/ruby.log')
-      @options = Env.new.options
+      @env = Env.new
     end
 
     def validate(key)
@@ -25,17 +26,19 @@ module Env
     private
 
     def validate_key(key)
+      puts key
+      puts @env.options
       case key
       when :postgres
-        Schema::PostgresSchema.new.call(@options)
+        Schema::PostgresSchema.new.call(@env.options)
       when :s3
-        Schema::S3Schema.new.call(@options)
+        Schema::S3Schema.new.call(@env.options)
       when :mailgun
-        Schema::MailgunSchema.new.call(@options)
+        Schema::MailgunSchema.new.call(@env.options)
       when :pushover
-        Schema::PushoverSchema.new.call(@options)
+        Schema::PushoverSchema.new.call(@env.options)
       when :discord
-        Schema::DiscordSchema.new.call(@options)
+        Schema::DiscordSchema.new.call(@env.options)
       else
         raise "Invalid key: #{key}"
       end

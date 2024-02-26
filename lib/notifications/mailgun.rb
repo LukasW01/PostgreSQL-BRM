@@ -6,13 +6,13 @@ require 'mailgun-ruby'
 
 module Notifications
   class MailGun
-    attr_reader :configuration, :mailgun
+    attr_reader :env, :mailgun
 
     def initialize
       @file = Util::File.new
-      @configuration = Env::Env.new.get_key(:mailgun)
+      @env = Env::Env.new.get_key(:mailgun)
       @database = Env::Env.new.get_key(:postgres)
-      @mailgun = Mailgun::Client.new(@configuration['api_key'], @configuration['mailgun_domain'])
+      @mailgun = Mailgun::Client.new(@env['api_key'], @env['mailgun_domain'])
       @logger = Logger.new('log/ruby.log')
     end
 
@@ -24,9 +24,9 @@ module Notifications
       @logger.info("Sending message to Mailgun for event: #{event}")
       begin
         @mailgun.send_message(
-          @configuration['domain'],
+          @env['domain'],
           {
-            from: "Postgres-BRM <#{@configuration['from']}>", to: @configuration['to'],
+            from: "Postgres-BRM <#{@env['from']}>", to: @env['to'],
             subject: "pg_backup - #{event_files['status']}",
             text: "#{event_files['description']} \n\n#{event_files['info'].gsub('%s', databases)} \n\n#{event_files['schedule'].gsub('%s', cronex)}"
           }

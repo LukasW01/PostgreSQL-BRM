@@ -49,14 +49,14 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
     @terminal ||= Util::Terminal.new
   end
 
-  def configuration
-    @configuration ||= Env::Env.new
+  def env
+    @env ||= Env::Env.new
   end
 
-  def configuration_to_text
+  def env_to_text
     [
-      list_config('S3', configuration.get_key(:s3).is_a?(Hash) ? 'True' : 'False'),
-      list_config('Database', configuration.get_key(:database).is_a?(Hash) ? 'True' : 'False')
+      list_config('S3', env.get_key(:s3).is_a?(Hash) ? 'True' : 'False'),
+      list_config('Database', env.get_key(:database).is_a?(Hash) ? 'True' : 'False')
     ].compact
   end
 

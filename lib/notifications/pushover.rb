@@ -6,11 +6,11 @@ require 'logger'
 
 module Notifications
   class PushOver
-    attr_reader :configuration, :pushover
+    attr_reader :env, :pushover
 
     def initialize
       @file = Util::File.new
-      @configuration = Env::Env.new.get_key(:pushover)
+      @env = Env::Env.new.get_key(:pushover)
       @database = Env::Env.new.get_key(:postgres)
       @logger = Logger.new('log/ruby.log')
     end
@@ -21,7 +21,7 @@ module Notifications
       @logger.info("Sending message to Pushover for event: #{event}")
       begin
         Pushover::Message.new(
-          token: @configuration['app_token'], user: @configuration['user_key'],
+          token: @env['app_token'], user: @env['user_key'],
           title: "pg_backup - #{event_file['status']}",
           message: "#{event_file['description']} \n\n#{event_file['info'].gsub('%s', databases)} \n\n#{event_file['schedule'].gsub('%s', cronex)}",
           priority:, expire: 3600, retry: 60

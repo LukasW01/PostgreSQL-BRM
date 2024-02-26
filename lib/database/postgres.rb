@@ -4,10 +4,10 @@ require 'logger'
 
 module Database
   class Postgres
-    attr_reader :configuration
+    attr_reader :env
 
     def initialize
-      @configuration = Env::Env.new.get_key(:postgres)
+      @env = Env::Env.new.get_key(:postgres)
       @logger = logger.new('log/ruby.log')
     end
 
@@ -16,7 +16,7 @@ module Database
     def dump
       file_path = File.join(backup_folder, "#{file_name}#{file_suffix}.sql")
 
-      system("PGPASSWORD='#{@configuration['password']}' pg_dump -F p -v -O -U '#{@configuration['user']}' -h '#{@configuration['host']}' -p '#{@configuration['port']}' -d '#{@configuration['database']}' -f '#{file_path}' ")
+      system("PGPASSWORD='#{@env['password']}' pg_dump -F p -v -O -U '#{@env['user']}' -h '#{@env['host']}' -p '#{@env['port']}' -d '#{@env['database']}' -f '#{file_path}' ")
 
       file_path
     end
@@ -32,7 +32,7 @@ module Database
     def restore(file_name)
       file_path = File.join(backup_folder, file_name)
 
-      system("PGPASSWORD='#{@configuration['password']}' psql -U '#{@configuration['user']}' -h '#{@configuration['host']}' -p '#{@configuration['port']}' -d '#{@configuration['database']}' -f '#{file_path}'<")
+      system("PGPASSWORD='#{@env['password']}' psql -U '#{@env['user']}' -h '#{@env['host']}' -p '#{@env['port']}' -d '#{@env['database']}' -f '#{file_path}'<")
 
       file_path
     end
@@ -55,7 +55,7 @@ module Database
     end
 
     def file_suffix
-      @file_suffix ||= "_#{@configuration['database']}"
+      @file_suffix ||= "_#{@env['database']}"
     end
   end
 end
