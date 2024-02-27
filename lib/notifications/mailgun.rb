@@ -10,10 +10,10 @@ module Notifications
 
     def initialize
       @file = Util::File.new
+      @logger = Logger.new(@file.app('log_path'))
       @env = Env::Env.new.get_key(:mailgun)
       @database = Env::Env.new.get_key(:postgres)
       @mailgun = Mailgun::Client.new(@env['api_key'], @env['mailgun_domain'])
-      @logger = Logger.new('log/ruby.log')
     end
 
     # Send an email through Mailgun.

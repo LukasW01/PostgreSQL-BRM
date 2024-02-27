@@ -1,17 +1,19 @@
-require 'dry/schema'
-require 'dry/validation'
-require 'logger'
 require_relative 'env'
+require_relative '../util/file'
 require_relative 'schema/s3_schema'
 require_relative 'schema/postgres_schema'
 require_relative 'schema/mailgun_schema'
 require_relative 'schema/pushover_schema'
 require_relative 'schema/discord_schema'
+require 'dry/schema'
+require 'dry/validation'
+require 'logger'
 
 module Env
   class Validation
     def initialize
-      @logger = Logger.new('log/ruby.log')
+      @file = Util::File.new
+      @logger = Logger.new(@file.app('log_path'))
       @env = Env.new
     end
 

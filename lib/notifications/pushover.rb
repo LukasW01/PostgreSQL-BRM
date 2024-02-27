@@ -10,9 +10,9 @@ module Notifications
 
     def initialize
       @file = Util::File.new
+      @logger = Logger.new(@file.app('log_path'))
       @env = Env::Env.new.get_key(:pushover)
       @database = Env::Env.new.get_key(:postgres)
-      @logger = Logger.new('log/ruby.log')
     end
 
     def send(event, priority = 0)

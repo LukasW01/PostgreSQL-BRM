@@ -1,4 +1,5 @@
 require_relative '../configuration/env'
+require_relative '../util/file'
 require 'aws-sdk-s3'
 require 'aws-sdk-s3/client'
 require 'logger'
@@ -9,7 +10,8 @@ module Storage
     attr_reader :env, :s3
 
     def initialize
-      @logger = Logger.new('log/ruby.log')
+      @file = Util::File.new
+      @logger = Logger.new(@file.app('log_path'))
       @env = Env::Env.new.get_key(:s3)
       @s3 = Aws::S3::Client.new(
         access_key_id: @env['access_key_id'], secret_access_key: @env['secret_access_key'],

@@ -10,10 +10,10 @@ module Notifications
 
     def initialize
       @file = Util::File.new
+      @logger = Logger.new(@file.app('log_path'))
       @env = Env::Env.new.get_key(:discord)
       @database = Env::Env.new.get_key(:postgres)
       @discord = Discordrb::Webhooks::Client.new(url: @env['webhook'].freeze)
-      @logger = Logger.new('log/ruby.log')
     end
 
     def send(event)

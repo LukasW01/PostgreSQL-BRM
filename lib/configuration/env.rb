@@ -1,6 +1,6 @@
+require_relative 'validation'
 require 'yaml'
 require 'logger'
-require_relative 'validation'
 
 module Env
   class Env

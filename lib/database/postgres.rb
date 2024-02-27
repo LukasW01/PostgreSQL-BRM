@@ -1,4 +1,5 @@
 require_relative '../configuration/env'
+require_relative '../util/file'
 require 'pathname'
 require 'logger'
 
@@ -7,8 +8,9 @@ module Database
     attr_reader :env
 
     def initialize
+      @file = Util::File.new
+      @logger = Logger.new(@file.app('log_path'))
       @env = Env::Env.new.get_key(:postgres)
-      @logger = logger.new('log/ruby.log')
     end
 
     # Backup the database and save it on the backup folder set in the
@@ -45,10 +47,6 @@ module Database
     end
 
     private
-
-    def backup_folder
-      @backup_folder ||= Dir.mkdir(File.join(Dir.pwd, 'backup')) unless Dir.exist?(File.join(Dir.pwd, 'backup'))
-    end
 
     def file_name
       @file_name ||= Time.current.strftime('%Y%m%d%H%M%S')
