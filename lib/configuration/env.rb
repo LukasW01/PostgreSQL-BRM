@@ -16,10 +16,10 @@ module Env
       @options[key]
     end
 
-    def get_each_key(_key)
-      @options.each_key do |_key|
+    def get_each_key(key)
+      key.each do |k|
         Validation.new.validate(k)
-        yield k, @options[k]
+        @options[k]
       end
     end
 
