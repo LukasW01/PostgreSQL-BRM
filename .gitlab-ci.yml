@@ -1,6 +1,16 @@
+services:
+  - postgres:latest
+
 stages:
 - test
 - lint
+- docker
+
+variables:
+  POSTGRES_DB: $DB
+  POSTGRES_USER: $DB_USER
+  POSTGRES_PASSWORD: $DB_PW
+  REGISTRY: ghcr.io
 
 cache:
   paths:
@@ -36,3 +46,18 @@ rspec:
     reports:
       junit: coverage/rspec.xml
   image: ruby:latest
+
+docker_build:
+  stage: docker
+  services:
+    - docker:dind
+  before_script:
+    - docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+  script:
+    - docker build --pull -t "postgresql_brm" .
+    # latest tag
+    - docker tag "postgresql_brm" "$REGISTRY/$PROJECT_NAMESPACE/postgresql_brm:latest"
+    - docker push "$REGISTRY/$PROJECT_NAMESPACE/postgresql_brm:latest"
+  image: docker:cli
+  only:
+    - tags
