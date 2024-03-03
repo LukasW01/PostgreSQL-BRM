@@ -16,6 +16,9 @@ bundle install
 
 Create a `env.yaml` file and fill in the required environment variables. You can use the [env.example.yaml](https://gitlab.com/LukasW01/postgresql-brm/-/blob/main/env.yaml.example) as a template.
 
+
+Expecuted the following rake-tasks to dump and restore the database:
+
 ```bash
 # dump the database
 bundler exec rake pg_brm:dump
