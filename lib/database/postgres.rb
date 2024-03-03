@@ -36,8 +36,6 @@ module Database
     end
 
     # Drop the database and recreate it.
-    # * rake db:drop
-    # * rake db:create
     def reset(index)
       @logger.info('Resetting database')
       begin
