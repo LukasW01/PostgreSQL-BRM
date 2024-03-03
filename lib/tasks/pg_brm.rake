@@ -4,20 +4,22 @@ require_relative '../storage/s3'
 require_relative '../notifications/hooks'
 require_relative '../configuration/env'
 require_relative '../util/file'
+require 'rake'
 require 'tty-prompt'
 require 'tty-spinner'
 require 'pastel'
+require 'parallel'
 
 namespace :pg_brm do # rubocop:disable Metrics/BlockLength
-  desc 'Dumps the database'
+  desc 'Dump the database to a file'
   task :dump do
-    terminal.box('Dump')
-    puts env_to_text
+    terminal.box('Dump', env_to_text)
 
-    env.get_key(:postgres).each_key do |(index)|
+    terminal.spinner("#{pastel.red.bold('Error:')} No databases available") { exit } unless options[:postgres].is_a?(Hash)
+    Parallel.each(options[:postgres].keys, in_threads: options[:postgres].keys.length) do |index|
       file_path = terminal.spinner("Backing up database #{index}") { db.dump(index) }
 
-      if env.get_key(:s3).is_a?(Hash)
+      if options[:s3].is_a?(Hash)
         terminal.spinner('Uploading file') { storage.upload(file_path) }
         terminal.spinner('Deleting local file') { File.delete(file_path) } if File.exist?(file_path)
       end
@@ -28,26 +30,23 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
 
   desc 'Restores a database from a dump'
   task :restore do
-    terminal.box('Restore')
-    puts env_to_text
+    terminal.box('Restore', env_to_text)
 
+    terminal.spinner("#{pastel.red.bold('Error:')} No databases available") { exit } unless options[:postgres].is_a?(Hash)
     index = prompt.select('Select a database to restore', database_index) do |menu|
-      menu.choice('Cancel') { exit }
+      menu.choice(pastel.red.bold('Cancle').to_s) { exit }
     end
 
-    if list_files(index).any?
-      file_path = prompt.select('Select a dump to restore', list_files(index)) do |menu|
-        menu.choice('Cancel') { exit }
-      end
-
-      terminal.spinner('Downloading file') { storage.download(file_path) } if env.get_key(:s3).is_a?(Hash)
-      terminal.spinner('Reseting database') { db.reset(index) }
-      terminal.spinner('Restoring database') { db.restore(index, file_path) }
-      terminal.spinner('Deleting local file') { File.delete(file_path) } if env.get_key(:s3).is_a?(Hash) && File.exist?(file_path)
-      terminal.spinner('Sending notifications (u.a : Discord, Mailgun, Pushover)') { hooks.pg_restore }
-    else
-      terminal.spinner("#{pastel.red.bold('Error:')} No dumps available") { exit }
+    terminal.spinner("#{pastel.red.bold('Error:')} No dumps available") { exit } unless list_files(index).any?
+    file_path = prompt.select('Select a dump to restore', list_files(index)) do |menu|
+      menu.choice(pastel.red.bold('Cancle').to_s) { exit }
     end
+
+    terminal.spinner('Downloading file') { storage.download(file_path) } if options[:s3].is_a?(Hash)
+    terminal.spinner('Reseting database') { db.reset(index) }
+    terminal.spinner('Restoring database') { db.restore(index, file_path) }
+    terminal.spinner('Deleting local file') { File.delete(file_path) } if options[:s3].is_a?(Hash) && File.exist?(file_path)
+    terminal.spinner('Sending notifications (u.a : Discord, Mailgun, Pushover)') { hooks.pg_restore }
   end
 
   private
@@ -84,17 +83,25 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
     @env ||= Env::Env.new
   end
 
+  def options
+    env.options
+  end
+
   def database_index
-    env.get_key(:postgres).keys.map { |index| { name: index, value: index } }
+    options[:postgres].keys.map { |index| { name: index, value: index } }
+  end
+
+  def list_files(index)
+    options[:s3].is_a?(Hash) ? storage.list_files(index) : db.list_files(index)
   end
 
   def env_to_text
     [
-      list_config('Database', database_index.map { |index| index[:name] }.join(', ')),
-      list_config('S3 (bucket)', env.get_key(:s3).is_a?(Hash) ? env.get_key(:s3)['bucket'] : nil),
-      list_config('Discord (webhook)', env.get_key(:discord).is_a?(Hash) ? 'Enabled' : 'Disabled'),
-      list_config('Pushover', env.get_key(:pushover).is_a?(Hash) ? 'Enabled' : 'Disabled'),
-      list_config('Mailgun', env.get_key(:mailgun).is_a?(Hash) ? 'Enabled' : 'Disabled')
+      list_config('Database', options[:postgres].is_a?(Hash) ? database_index.map { |index| index[:name] }.join(', ') : 'None'),
+      list_config('S3 (bucket)', options[:s3].is_a?(Hash) ? options[:s3]['bucket'] : 'None'),
+      list_config('Discord (webhook)', options[:discord].is_a?(Hash) ? 'Enabled' : 'Disabled'),
+      list_config('Pushover', options[:pushover].is_a?(Hash) ? 'Enabled' : 'Disabled'),
+      list_config('Mailgun', options[:mailgun].is_a?(Hash) ? 'Enabled' : 'Disabled')
     ].compact
   end
 
@@ -102,9 +109,5 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
     return if value.nil?
 
     "* #{pastel.blue.bold(text)}: #{value}"
-  end
-
-  def list_files(index)
-    env.get_key(:s3).is_a?(Hash) ? storage.list_files(index) : db.list_files(index)
   end
 end

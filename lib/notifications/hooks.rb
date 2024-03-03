@@ -10,7 +10,7 @@ module Notifications
     def initialize
       @file = Util::File.new
       @logger = Logger.new(@file.app('log_path'))
-      @env = Env::Env.new
+      @env = Env::Env.new.options
     end
 
     def pg_success
@@ -25,12 +25,20 @@ module Notifications
       send(:restore)
     end
 
+    def s3_success
+      send(:s3_success)
+    end
+
+    def s3_failure
+      send(:s3_failure)
+    end
+
     private
 
     def send(event)
-      @env.get_key(:pushover).is_a?(Hash) ? PushOver.new.send(event) : @logger.info('Pushover not configured')
-      @env.get_key(:discord).is_a?(Hash) ? Discord.new.send(event) : @logger.info('Discord not configured')
-      @env.get_key(:mailgun).is_a?(Hash) ? MailGun.new.send(event) : @logger.info('Mailgun not configured')
+      @env[:pushover].is_a?(Hash) ? PushOver.new.send(event) : @logger.info('Pushover not configured')
+      @env[:discord].is_a?(Hash) ? Discord.new.send(event) : @logger.info('Discord not configured')
+      @env[:mailgun].is_a?(Hash) ? MailGun.new.send(event) : @logger.info('Mailgun not configured')
     end
   end
 end

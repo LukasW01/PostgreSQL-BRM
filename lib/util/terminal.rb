@@ -19,8 +19,10 @@ module Util
       result
     end
 
-    def box(text)
-      puts TTY::Box.frame(width: 50, title: { top_left: @file.app('name'), bottom_right: @file.app('version') }) { text }
+    def box(text, bullets)
+      puts TTY::Box.frame(width: 50, title: { top_left: @file.app('name'), bottom_right: @file.app('version') }) {
+        "#{text}\n\n#{bullets.join("\n")}"
+      }
     end
   end
 end

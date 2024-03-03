@@ -10,15 +10,13 @@ RUN adduser --disabled-password --gecos "" $user
 WORKDIR /ruby
 COPY . .
 RUN chown -R $user:$user .
+VOLUME ["/ruby/lib/backup", "/ruby/lib/log"]
 
 USER $user
-
 RUN bundle install
 
-VOLUME ["/ruby/lib/backups", "/ruby/lib/log"]
-
 ENTRYPOINT ["/bin/bash", "-c"]
-CMD ["exec /usr/local/bin/go-cron -s \"$SCHEDULE\" -p \"$HEALTHCHECK_PORT\" -- bundler exec rake pg_brm:dump"]
+CMD ["exec /usr/local/bin/go-cron -s \"$SCHEDULE\" -p \"$HEALTHCHECK_PORT\" -c \"bundler exec rake pg_brm:dump\""]
 
 HEALTHCHECK --interval=5m --timeout=3s \
   CMD curl -f "http://localhost:$HEALTHCHECK_PORT/" || exit 1

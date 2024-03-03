@@ -15,7 +15,7 @@ module Notifications
       @database = Env::Env.new.get_key(:postgres)
     end
 
-    def send(event, priority = 0)
+    def send(event)
       event_file = @file.event(event)
 
       @logger.info("Sending message to Pushover for event: #{event}")
@@ -24,7 +24,7 @@ module Notifications
           token: @env['app_token'], user: @env['user_key'],
           title: "pg_backup - #{event_file['status']}",
           message: "#{event_file['description']} \n\n#{event_file['info'].gsub('%s', databases)} \n\n#{event_file['schedule'].gsub('%s', cronex)}",
-          priority:, expire: 3600, retry: 60
+          priority: priority(event), expire: 3600, retry: 60
         ).push
       rescue StandardError => e
         @logger.error("Error sending message to Pushover for event: #{event}")
@@ -34,6 +34,16 @@ module Notifications
     end
 
     private
+
+    # set priority for pushover messages based on event
+    def priority(event)
+      case event
+      when 'backup', 's3_success'
+        0
+      when 'error', 'restore', 's3_failure'
+        2
+      end
+    end
 
     # search for all databases in @database hash and join them with a comma
     def databases

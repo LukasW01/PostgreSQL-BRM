@@ -58,6 +58,9 @@ docker_build:
     # latest tag
     - docker tag "postgresql_brm" "$REGISTRY/$PROJECT_NAMESPACE/postgresql_brm:latest"
     - docker push "$REGISTRY/$PROJECT_NAMESPACE/postgresql_brm:latest"
+    # version tag
+    - docker tag "postgresql_brm" "$REGISTRY/$PROJECT_NAMESPACE/postgresql_brm:$CI_COMMIT_TAG"
+    - docker push "$REGISTRY/$PROJECT_NAMESPACE/postgresql_brm:$CI_COMMIT_TAG"
   image: docker:cli
   only:
     - tags

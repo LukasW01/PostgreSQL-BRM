@@ -30,7 +30,14 @@ module Database
         @logger.error(e.message)
         raise e
       end
-      @logger.info("Backup saved to #{file_path}")
+
+      if File.exist?(file_path)
+        @logger.info("Database #{index} backed up to #{file_path}")
+      else
+        @hook.pg_failure
+        @logger.error("Error backing up database #{index}. Backup file #{file_path} not found")
+        raise 'Error backing up database. Backup file not found'
+      end
 
       file_path
     end
