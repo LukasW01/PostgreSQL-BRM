@@ -2,6 +2,10 @@
 
 A Ruby-Based PostgreSQL Backup and Restore Manager designed to enable you to securely store your database dumps in an S3 Bucket, while also providing notifications via Discord Webhooks, Pushover, and Mailgun.
 
+![rake pg_brm:dump](data/dump.png)
+
+![rake pg_brm:restore](data/restore.png)
+
 ## Getting Started
 
 Install the dependencies:
