@@ -7,13 +7,13 @@ describe Util::File do
   end
 
   describe '#event' do
-    it 'returns the correct event from the yaml file' do #not null/nil
+    it 'returns the a event from the yaml file' do
       expect(@file.event('backup')).to_not be nil
     end
   end
 
   describe '#app' do
-    it 'returns the correct app info from the yaml file' do
+    it 'returns the a app info from the yaml file' do
       expect(@file.app('version')).to_not be nil
     end
   end

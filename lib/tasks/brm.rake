@@ -32,6 +32,7 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
   desc 'Restores a database from a dump'
   task :restore do
     terminal.box('Restore')
+    puts env_to_text
   end
 
   private
@@ -72,8 +73,6 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
   end
 
   def list_config(text, value)
-    return if value.empty?
-
     "* #{pastel.yellow.bold(text)}: #{value}"
   end
 end

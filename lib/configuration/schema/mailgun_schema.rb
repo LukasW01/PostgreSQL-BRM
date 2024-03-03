@@ -13,15 +13,11 @@ module Schema
     end
 
     rule(:mailgun) do
-      if value
-        key(%i[mailgun mailgun_domain]).failure('mailgun_domain must be a valid api domain (api.mailgun.net or api.eu.mailgun.net)') unless value && /^api\.(?:eu\.)?mailgun\.net$/.match?(value[:mailgun_domain])
-      end
+      key(%i[mailgun mailgun_domain]).failure('mailgun_domain must be a valid api domain (api.mailgun.net or api.eu.mailgun.net)') unless value && /^api\.(?:eu\.)?mailgun\.net$/.match?(value[:mailgun_domain])
     end
 
     rule(:mailgun) do
-      if value
-        key(%i[mailgun domain]).failure('domain must be a valid domain (e.g example.com)') unless value && /^[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,7}$/.match?(value[:domain])
-      end
+      key(%i[mailgun domain]).failure('domain must be a valid domain (e.g example.com)') unless value && /^[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,7}$/.match?(value[:domain])
     end
 
     rule(:mailgun) do
