@@ -23,11 +23,10 @@ module Storage
     # Send files to S3.
     def upload(file_path)
       @logger.info("Uploading file #{file_path} to S3")
-
       begin
         @s3.put_object(
           bucket: @env['bucket'],
-          key: file_path.to_s,
+          key: file_path,
           body: File.read(file_path),
           content_type: 'application/octet-stream'
         )
@@ -36,14 +35,12 @@ module Storage
         @logger.error(e.message)
         raise e
       end
-
       @logger.info("File #{file_path} uploaded to S3")
     end
 
     # Create a local file with the contents of the remote file
     def download(file_name)
       @logger.info("Downloading file #{file_name} from S3")
-
       begin
         @s3.get_object(
           bucket: @env['bucket'],
@@ -55,29 +52,22 @@ module Storage
         @logger.error(e.message)
         raise e
       end
-
       @logger.info("File #{file_name} downloaded from S3")
     end
 
-    def list_s3_files
+    def list_files(index)
       @logger.info('Listing files in S3')
-
       begin
-        puts @s3.list_objects_v2(
-          bucket: @env['bucket']
-        )
+        response = @s3.list_objects_v2(bucket: @env['bucket'])
+        response[:contents]
+          .select { |file| file[:key].include?(index) }
+          .sort_by { |file| file[:last_modified] }
+          .map { |file| { File.basename(file[:key]) => file[:key] } }
       rescue StandardError => e
         @logger.error('Error listing files in S3')
         @logger.error(e.message)
         raise e
       end
-    end
-
-    private
-
-    # Force UTF-8 encoding in the file body.
-    def file_body(file)
-      file.body.force_encoding('UTF-8')
     end
   end
 end

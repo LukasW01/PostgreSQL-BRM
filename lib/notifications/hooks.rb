@@ -28,21 +28,9 @@ module Notifications
     private
 
     def send(event)
-      pushover? ? PushOver.new.send(event) : @logger.info('Pushover not configured')
-      discord? ? Discord.new.send(event) : @logger.info('Discord not configured')
-      mailgun? ? MailGun.new.send(event) : @logger.info('Mailgun not configured')
-    end
-
-    def mailgun?
-      @env.get_key(:mailgun).is_a?(Hash)
-    end
-
-    def pushover?
-      @env.get_key(:pushover).is_a?(Hash)
-    end
-
-    def discord?
-      @env.get_key(:discord).is_a?(Hash)
+      @env.get_key(:pushover).is_a?(Hash) ? PushOver.new.send(event) : @logger.info('Pushover not configured')
+      @env.get_key(:discord).is_a?(Hash) ? Discord.new.send(event) : @logger.info('Discord not configured')
+      @env.get_key(:mailgun).is_a?(Hash) ? MailGun.new.send(event) : @logger.info('Mailgun not configured')
     end
   end
 end

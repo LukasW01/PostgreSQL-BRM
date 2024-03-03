@@ -25,6 +25,7 @@ module Notifications
           builder.username = 'Postgres-BRM'
           builder.add_embed do |embed|
             embed.title = 'pg_backup'
+            embed.colour = 3_430_821
             embed.description = event_file['description']
             embed.add_field(name: 'Status:', value: event_file['status'])
             embed.add_field(name: 'Info:', value: event_file['info'].gsub('%s', databases))
