@@ -6,6 +6,7 @@ require_relative '../notifications/pushover'
 require_relative '../notifications/mailgun'
 require_relative '../util/file'
 require_relative '../configuration/env'
+require_relative '../notifications/hooks'
 require 'tty-prompt'
 require 'tty-spinner'
 require 'pastel'
@@ -14,9 +15,21 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
   desc 'Dumps the database'
   task :dump do
     terminal.box('Dump')
+    puts env_to_text
+
+    env.get_key(:postgres).each_key do |(index)|
+      file_path = terminal.spinner("Backing up database #{index}") { db.dump(index) }
+
+      if env.get_key(:s3).is_a?(Hash)
+        terminal.spinner('Uploading file') { storage.upload(file_path) }
+        terminal.spinner('Deleting local file') { File.delete(file_path) } if File.exist?(file_path)
+      end
+    end
+
+    terminal.spinner('Sending notifications (u.a : Discord, Mailgun, Pushover)') { hooks.pg_success }
   end
 
-  desc 'Restores a database backup into the database'
+  desc 'Restores a database from a dump'
   task :restore do
     terminal.box('Restore')
   end
@@ -31,16 +44,8 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
     @storage ||= Storage::S3.new
   end
 
-  def discord
-    @discord ||= Notifications::Discord.new
-  end
-
-  def pushover
-    @pushover ||= Notifications::PushOver.new
-  end
-
-  def mailgun
-    @mailgun ||= Notifications::MailGun.new
+  def hooks
+    @hooks ||= Notifications::Hooks.new
   end
 
   def pastel
@@ -62,7 +67,7 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
   def env_to_text
     [
       list_config('S3', env.get_key(:s3).is_a?(Hash) ? 'True' : 'False'),
-      list_config('Database', env.get_key(:database).is_a?(Hash) ? 'True' : 'False')
+      list_config('Database', env.get_key(:postgres).is_a?(Hash) ? 'True' : 'False')
     ].compact
   end
 

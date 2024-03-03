@@ -18,6 +18,7 @@ module Env
     end
 
     def validate(key)
+      @logger.info("Validating #{key}")
       @logger.error("Validation failed for #{key}: #{validate_key(key).errors.to_h}") unless validate_key(key).success?
       raise validate_key(key).errors.to_h.to_s unless validate_key(key).success?
 

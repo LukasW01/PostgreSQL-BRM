@@ -23,11 +23,12 @@ module Storage
     # Send files to S3.
     def upload(file_path)
       @logger.info("Uploading file #{file_path} to S3")
+
       begin
         @s3.put_object(
+          bucket: @env['bucket'],
           key: file_path.to_s,
           body: File.read(file_path),
-          bucket: @env['bucket'],
           content_type: 'application/octet-stream'
         )
       rescue StandardError => e
@@ -35,16 +36,18 @@ module Storage
         @logger.error(e.message)
         raise e
       end
+
       @logger.info("File #{file_path} uploaded to S3")
     end
 
     # Create a local file with the contents of the remote file
     def download(file_name)
       @logger.info("Downloading file #{file_name} from S3")
+
       begin
         @s3.get_object(
-          response_target: "backup/#{file_name}",
           bucket: @env['bucket'],
+          response_target: file_name,
           key: file_name
         )
       rescue StandardError => e
@@ -52,11 +55,13 @@ module Storage
         @logger.error(e.message)
         raise e
       end
+
       @logger.info("File #{file_name} downloaded from S3")
     end
 
     def list_s3_files
       @logger.info('Listing files in S3')
+
       begin
         puts @s3.list_objects_v2(
           bucket: @env['bucket']

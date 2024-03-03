@@ -20,17 +20,17 @@ rubocop:
     - bundler exec rubocop
   image: ruby:latest
 
-#rspec:
-#  stage: test 
-#  before_script:
-#    - ruby -v
-#    - bundle install -j $(nproc)
-#  script:
-#    - bundle exec rspec spec --format RspecJunitFormatter --out coverage/rspec.xml
-#  artifacts:
-#    when: always
-#    paths:
-#      - coverage/
-#    reports:
-#      junit: coverage/rspec.xml
-#  image: ruby:latest
+rspec:
+  stage: test 
+  before_script:
+    - ruby -v
+    - bundle install -j $(nproc)
+  script:
+    - bundle exec rspec spec -r rspec_junit_formatter --format RspecJunitFormatter -o coverage/rspec.xml
+  artifacts:
+    when: always
+    paths:
+      - coverage/
+    reports:
+      junit: coverage/rspec.xml
+  image: ruby:latest
