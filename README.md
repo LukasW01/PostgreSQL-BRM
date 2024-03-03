@@ -65,10 +65,10 @@ Expecuted the following rake-tasks to dump and restore the database:
 
 ```bash
 # dump the database
-bundler exec rake pg_brm:dump
+bundle exec rake pg_brm:dump
 
 # restore the database
-bundler exec rake pg_brm:restore
+bundle exec rake pg_brm:restore
 ```
 
 ## License
