@@ -26,9 +26,9 @@ bundler exec rake pg_brm:restore
 
 ## Docker
 
-The PostgreSQL BRM is also available as a Docker image. The image will be periodically dump the database and store the dump in an S3 bucket (if configured). 
+The PostgreSQL BRM is available as a Docker image. The image will be periodically dump the database and store the dump in an S3 bucket (if configured). 
 
-Note: Configuration is done via environment variables and a `env.yaml` file. The `env.yaml` file is mounted into the container and the environment variables are passed to the container. 
+Note: Configuration is done via environment variables and a `env.yaml` file. The `env.yaml` file is mounted into the container. 
 
 ```yaml
 ---
@@ -72,7 +72,7 @@ networks:
 
 ## Configuration
 
-Create a `env.yaml` file and fill in the required environment variables. You can use the [env.example.yaml](https://gitlab.com/LukasW01/postgresql-brm/-/blob/main/env.yaml.example) as a template.
+Create a `env.yaml` file and fill in the required environment variables. You can use the [env.example.yaml](https://gitlab.com/LukasW01/postgresql-brm/-/blob/main/env.yaml) as a template.
 
 If a `env.yaml` file is not present, the PostgreSQL BRM will raise an error and exit. The configuration file is required to run the PostgreSQL BRM and is getting validated when different modules are getting initialized. The only required environment variable is `postgres`. Other environment variables are optional and can be omitted. If you want dump multiple databases, you can add multiple `postgres` sections to the `env.yaml` file.
 
@@ -80,13 +80,11 @@ If a `env.yaml` file is not present, the PostgreSQL BRM will raise an error and 
 postgres: 
   db:
     host: "localhost"
-    port: "5432"
+    port: 5432
     database: "postgres"
     user: "root"
     password: ""
 ```
-
-If the configuration is wrong the reason will probably be logged to the `log/` directory. The PostgreSQL BRM will log all errors and warnings to the log file. And also log the successful backups and restores.
 
 ## License
 

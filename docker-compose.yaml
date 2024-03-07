@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+    postgres:
+        image: docker.io/postgres:16-alpine
+        restart: unless-stopped
+        networks:
+        - db
+        volumes:
+        - ./db/:/var/lib/postgresql/data:Z
+        environment:
+        - POSTGRES_DB: "db"
+        - POSTGRES_USER: "user"
+        - POSTGRES_PASSWORD: "password"
+        labels:
+        - io.containers.autoupdate=registry
+
+    pg_brm:
+        image: ghcr.io/lukasw01/postgresql_brm:latest
+        container_name: pg_brm
+        restart: unless-stopped
+        networks:
+        - db
+        volumes:
+        - ./env.yaml:/ruby/env.yaml:Z
+        - ./backup/:/ruby/lib/backup:Z
+        - ./log/:/ruby/lib/log:Z
+        environment:
+        - TZ=Europe/Zurich # default
+        - SCHEDULE=0 0 * * * # default (no @daily like expression supported)
+        labels:
+        - io.containers.autoupdate=registry
+
+networks:
+  db:
+    external: true
+```
