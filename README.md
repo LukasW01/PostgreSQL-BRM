@@ -72,7 +72,7 @@ networks:
 
 ## Configuration
 
-Create a `env.yaml` file and fill in the required environment variables. You can use the [env.example.yaml](https://gitlab.com/LukasW01/postgresql-brm/-/blob/main/env.yaml) as a template.
+Create a `env.yaml` file and fill in the required environment variables. You can use the [env.example.yaml](https://gitlab.com/LukasW01/postgresql-brm/-/blob/main/env.example.yaml) as a template.
 
 If a `env.yaml` file is not present, the PostgreSQL BRM will raise an error and exit. The configuration file is required to run the PostgreSQL BRM and is getting validated when different modules are getting initialized. The only required environment variable is `postgres`. Other environment variables are optional and can be omitted. If you want dump multiple databases, you can add multiple `postgres` sections to the `env.yaml` file.
 

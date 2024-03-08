@@ -6,6 +6,7 @@
 
 # Environment
 .env
+env.yaml
 
 # Test coverage (spec)
 /coverage/
