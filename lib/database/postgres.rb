@@ -35,8 +35,8 @@ module Database
         @logger.info("Database #{index} backed up to #{file_path}")
       else
         @hook.pg_failure
-        @logger.error("Error backing up database #{index}. Backup file #{file_path} not found")
-        raise 'Error backing up database. Backup file not found'
+        @logger.error("Error backing up database #{index}. Backup file #{file_path} not found due to an error when backing up")
+        raise 'Error backing up database. Backup file not found due to an error when backing up'
       end
 
       file_path

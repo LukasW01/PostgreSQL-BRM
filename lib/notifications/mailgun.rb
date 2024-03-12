@@ -27,7 +27,7 @@ module Notifications
           @env['domain'],
           {
             from: "Postgres-BRM <#{@env['from']}>", to: @env['to'],
-            subject: "pg_backup - #{event_files['status']}",
+            subject: "pg_brm - #{event_files['status']}",
             text: "#{event_files['description']} \n\n#{event_files['info'].gsub('%s', databases)} \n\n#{event_files['schedule'].gsub('%s', cronex)}"
           }
         )

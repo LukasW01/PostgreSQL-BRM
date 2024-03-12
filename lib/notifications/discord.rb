@@ -24,7 +24,7 @@ module Notifications
         @discord.execute do |builder|
           builder.username = 'Postgres-BRM'
           builder.add_embed do |embed|
-            embed.title = 'pg_backup'
+            embed.title = 'pg_brm'
             embed.colour = 3_430_821
             embed.description = event_file['description']
             embed.add_field(name: 'Status:', value: event_file['status'])
