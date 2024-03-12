@@ -6,7 +6,7 @@ group :development do
   gem 'bump', '~> 0.10.0'
   gem 'rake', '~> 12.1'
   gem 'rspec', '~> 3.13.0'
-  gem 'rubocop', '~> 1.61.0'
+  gem 'rubocop', '~> 1.62.1'
   gem 'simplecov', '~> 0.22.0'
 end
 
