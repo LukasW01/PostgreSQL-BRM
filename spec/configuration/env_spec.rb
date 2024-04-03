@@ -23,8 +23,10 @@ RSpec.describe 'Env' do
     FileUtils.rm_f('env.yaml')
   end
 
-  it 'loads postgres options correctly from yaml' do
-    allow(env).to receive(:get_key).and_return(@options[:postgres])
-    expect(Env::Env.new.get_key(:postgres)).to eq(@options[:postgres])
+  describe '.get_key' do
+    it 'loads postgres options correctly from yaml' do
+      allow(env).to receive(:get_key).and_return(@options[:postgres])
+      expect(Env::Env.new.get_key(:postgres)).to eq(@options[:postgres])
+    end
   end
 end

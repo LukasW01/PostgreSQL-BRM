@@ -2,18 +2,16 @@ require 'rspec'
 require_relative '../../lib/util/terminal'
 
 RSpec.describe Util::Terminal do
-  before(:each) do
-    @terminal = Util::Terminal.new
-  end
+  let(:terminal) { Util::Terminal.new }
 
-  describe '#spinner' do
+  describe '.spinner' do
     it 'starts the spin' do
       expect_any_instance_of(TTY::Spinner).to receive(:auto_spin).and_call_original
-      @terminal.spinner('testing the spinner') { true }
+      terminal.spinner('testing the spinner') { true }
     end
 
     it 'returns the block value' do
-      result = @terminal.spinner('testing the spinner') { 10 }
+      result = terminal.spinner('testing the spinner') { 10 }
       expect(result).to eq(10)
     end
   end
@@ -26,7 +24,7 @@ RSpec.describe Util::Terminal do
         "#{text}\n\n#{bullets.join("\n")}"
       end
 
-      expect { @terminal.box(text, bullets) }.to output(expected_output).to_stdout
+      expect { terminal.box(text, bullets) }.to output(expected_output).to_stdout
     end
   end
 end
