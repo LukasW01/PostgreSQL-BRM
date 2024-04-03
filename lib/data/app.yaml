@@ -1,7 +1,0 @@
-version: 1.1
-schedule: "0 0 * * *"
-timezone: "Europe/Amsterdam"
-language: "en"
-name: "pg_brm"
-log_path: "lib/log/ruby.log"
-backup_dir: "lib/backup/"

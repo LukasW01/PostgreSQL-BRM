@@ -10,7 +10,7 @@ module Notifications
 
     def initialize
       @file = Util::File.new
-      @logger = Logger.new(@file.app('log_path'))
+      @logger = Logger.new('lib/log/ruby.log')
       @env = Env::Env.new.get_key(:pushover)
       @database = Env::Env.new.get_key(:postgres)
     end
@@ -38,9 +38,9 @@ module Notifications
     # set priority for pushover messages based on event
     def priority(event)
       case event
-      when 'backup', 's3_success'
+      when :backup, :s3_success, :restore
         0
-      when 'error', 'restore', 's3_failure'
+      when :error, :s3_failure
         2
       end
     end
@@ -55,7 +55,7 @@ module Notifications
     def cronex
       Cronex::ExpressionDescriptor.new(ENV.fetch('SCHEDULE', nil)).description
     rescue StandardError
-      Cronex::ExpressionDescriptor.new(@file.app('schedule')).description
+      Cronex::ExpressionDescriptor.new('0 0 * * *').description
     end
   end
 end

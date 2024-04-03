@@ -1,5 +1,4 @@
 require_relative '../configuration/env'
-require_relative '../util/file'
 require 'discordrb/webhooks'
 require 'cronex'
 require 'logger'
@@ -10,7 +9,7 @@ module Notifications
 
     def initialize
       @file = Util::File.new
-      @logger = Logger.new(@file.app('log_path'))
+      @logger = Logger.new('lib/log/ruby.log')
       @env = Env::Env.new.get_key(:discord)
       @database = Env::Env.new.get_key(:postgres)
       @discord = Discordrb::Webhooks::Client.new(url: @env['webhook'].freeze)
@@ -51,7 +50,7 @@ module Notifications
     def cronex
       Cronex::ExpressionDescriptor.new(ENV.fetch('SCHEDULE', nil)).description
     rescue StandardError
-      Cronex::ExpressionDescriptor.new(@file.app('schedule')).description
+      Cronex::ExpressionDescriptor.new('0 0 * * *').description
     end
   end
 end

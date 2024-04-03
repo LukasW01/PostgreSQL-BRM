@@ -25,7 +25,7 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
       end
     end
 
-    terminal.spinner('Sending notifications (u.a : Discord, Mailgun, Pushover)') { hooks.pg_success }
+    terminal.spinner('Sending notifications (u.a : Discord, Mailgun, Pushover)') { hooks.send(:backup) }
   end
 
   desc 'Restores a database from a dump'
@@ -46,7 +46,7 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
     terminal.spinner('Reseting database') { db.reset(index) }
     terminal.spinner('Restoring database') { db.restore(index, file_path) }
     terminal.spinner('Deleting local file') { File.delete(file_path) } if options[:s3].is_a?(Hash) && File.exist?(file_path)
-    terminal.spinner('Sending notifications (u.a : Discord, Mailgun, Pushover)') { hooks.pg_restore }
+    terminal.spinner('Sending notifications (u.a : Discord, Mailgun, Pushover)') { hooks.send(:restore) }
   end
 
   private
@@ -79,12 +79,8 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
     @file ||= Util::File.new
   end
 
-  def env
-    @env ||= Env::Env.new
-  end
-
   def options
-    env.options
+    Env::Env.new.options
   end
 
   def database_index

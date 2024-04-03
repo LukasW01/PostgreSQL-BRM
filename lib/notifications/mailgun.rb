@@ -10,7 +10,7 @@ module Notifications
 
     def initialize
       @file = Util::File.new
-      @logger = Logger.new(@file.app('log_path'))
+      @logger = Logger.new('lib/log/ruby.log')
       @env = Env::Env.new.get_key(:mailgun)
       @database = Env::Env.new.get_key(:postgres)
       @mailgun = Mailgun::Client.new(@env['api_key'], @env['mailgun_domain'])
@@ -50,7 +50,7 @@ module Notifications
     def cronex
       Cronex::ExpressionDescriptor.new(ENV.fetch('SCHEDULE', nil)).description
     rescue StandardError
-      Cronex::ExpressionDescriptor.new(@file.app('schedule')).description
+      Cronex::ExpressionDescriptor.new('0 0 * * *').description
     end
   end
 end

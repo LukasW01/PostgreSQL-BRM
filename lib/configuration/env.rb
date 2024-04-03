@@ -28,7 +28,7 @@ module Env
     def load_yaml
       @options.merge!(YAML.load(open('env.yaml')).transform_keys(&:to_sym))
     rescue Errno::ENOENT
-      raise 'env.yaml not found. take a reference from env.yaml.example.'
+      raise 'env.yaml not found. take reference from env.yaml.example.'
     end
   end
 end

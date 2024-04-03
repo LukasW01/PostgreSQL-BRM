@@ -1,4 +1,3 @@
-require_relative 'file'
 require 'pastel'
 require 'tty-spinner'
 require 'tty-box'
@@ -6,7 +5,6 @@ require 'tty-box'
 module Util
   class Terminal
     def initialize
-      @file = Util::File.new
       @pastel = Pastel.new
     end
 
@@ -20,7 +18,7 @@ module Util
     end
 
     def box(text, bullets)
-      puts TTY::Box.frame(width: 50, title: { top_left: @file.app('name'), bottom_right: @file.app('version') }) {
+      puts TTY::Box.frame(width: 50, title: { top_left: 'pg_brm', bottom_right: '1.1' }) {
         "#{text}\n\n#{bullets.join("\n")}"
       }
     end
