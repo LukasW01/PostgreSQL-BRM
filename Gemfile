@@ -4,7 +4,7 @@ ruby '3.3.0'
 
 group :development do
   gem 'bump', '~> 0.10.0'
-  gem 'rake', '~> 12.1'
+  gem 'rake', '~> 13.2'
 end
 
 group :production do
