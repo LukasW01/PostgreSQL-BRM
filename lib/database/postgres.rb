@@ -31,7 +31,7 @@ module Database
       else
         @hook.send(:error)
         @logger.error("Error saving database #{index}. Backup file #{file_path} was not found due to an error while saving")
-        @logger.error("Possible root cause: Connection interrupted/missing write permissions.")
+        @logger.error('Possible root cause: Connection interrupted/missing write permissions.')
         raise 'Error backing up database. Backup file not found due to an error when backing up'
       end
 
