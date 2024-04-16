@@ -33,7 +33,6 @@ module Storage
         @logger.error(e.message)
         raise e
       end
-      @logger.info("File #{file_path} uploaded to S3")
     end
 
     # Create a local file with the contents of the remote file
@@ -50,12 +49,10 @@ module Storage
         @logger.error(e.message)
         raise e
       end
-      @logger.info("File #{file_name} downloaded from S3")
     end
 
     # Populates a list of files stored in S3 by searching for files that include the dbname, sorting them by last_modified, and mapping them to a key/value list.
     def list_files(index)
-      @logger.info('Listing files in S3')
       begin
         response = @s3.list_objects_v2(bucket: @env['bucket'])
         response[:contents]

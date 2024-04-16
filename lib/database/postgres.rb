@@ -12,8 +12,7 @@ module Database
       @hook = Notifications::Hooks.new
     end
 
-    # Backup the database and save it on the backup folder set in the
-    # configuration.
+    # Backup the database and save it on the backup folder set in the configuration.
     def dump(index)
       file_path = File.join('lib/backup', "#{index}_#{file_date}.sql")
 
@@ -31,7 +30,8 @@ module Database
         @logger.info("Database #{index} backed up to #{file_path}")
       else
         @hook.send(:error)
-        @logger.error("Error backing up database #{index}. Backup file #{file_path} not found due to an error when backing up")
+        @logger.error("Error saving database #{index}. Backup file #{file_path} was not found due to an error while saving")
+        @logger.error("Possible root cause: Connection interrupted/missing write permissions.")
         raise 'Error backing up database. Backup file not found due to an error when backing up'
       end
 
@@ -50,7 +50,6 @@ module Database
         @logger.error(e.message)
         raise e
       end
-      @logger.info('Database reset')
     end
 
     # Restore the database from a file in the file system.
@@ -66,7 +65,6 @@ module Database
         @logger.error(e.message)
         raise e
       end
-      @logger.info("Database restored from #{file_path}")
     end
 
     # List all backup files from the local backup folder.
