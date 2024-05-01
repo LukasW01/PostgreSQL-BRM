@@ -1,4 +1,4 @@
-FROM ruby:3.3.0-alpine3.19
+FROM ruby:3.3.0
 ARG user=ruby
 ARG GOCRONVER=v0.0.10
 ARG TARGETOS

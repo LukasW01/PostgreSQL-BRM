@@ -29,7 +29,7 @@ rubocop:
     - bundle install -j $(nproc)
   script:
     - bundler exec rubocop
-  image: ruby:3.3.0-alpine3.19
+  image: ruby:3.3.0
 
 rspec:
   stage: test
@@ -46,7 +46,7 @@ rspec:
       - coverage/
     reports:
       junit: coverage/rspec.xml
-  image: ruby:3.3.0-alpine3.19
+  image: ruby:3.3.0
 
 docker_build:
   stage: docker
