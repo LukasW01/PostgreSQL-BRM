@@ -2,9 +2,9 @@ services:
   - postgres:latest
 
 stages:
-- test
-- lint
-- docker
+  - test
+  - lint
+  - docker
 
 variables:
   POSTGRES_DB: $DB
@@ -19,7 +19,7 @@ cache:
 sast:
   stage: test
 include:
-- template: Security/SAST.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
 
 rubocop:
   stage: lint
@@ -29,10 +29,10 @@ rubocop:
     - bundle install -j $(nproc)
   script:
     - bundler exec rubocop
-  image: ruby:latest
+  image: ruby:3.3.0-alpine3.19
 
 rspec:
-  stage: test 
+  stage: test
   before_script:
     - ruby -v
     - bundle config set --local deployment true
@@ -46,7 +46,7 @@ rspec:
       - coverage/
     reports:
       junit: coverage/rspec.xml
-  image: ruby:latest
+  image: ruby:3.3.0-alpine3.19
 
 docker_build:
   stage: docker
