@@ -27,6 +27,6 @@ end
 group :test do
   gem 'rspec', '~> 3.13.0'
   gem 'rspec_junit_formatter', '~> 0.6.0'
-  gem 'rubocop', '~> 1.63.4'
+  gem 'rubocop', '~> 1.63.5'
   gem 'simplecov', '~> 0.22.0'
 end
