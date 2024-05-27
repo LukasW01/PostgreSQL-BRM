@@ -18,7 +18,7 @@ GEM
       aws-sigv4 (~> 1.8)
     aws-sigv4 (1.8.0)
       aws-eventstream (~> 1, >= 1.0.2)
-    bigdecimal (3.1.6)
+    bigdecimal (3.1.8)
     bump (0.10.0)
     concurrent-ruby (1.2.3)
     cronex (0.2.0)
@@ -45,7 +45,7 @@ GEM
       concurrent-ruby (~> 1.0)
       dry-core (~> 1.0, < 2)
       zeitwerk (~> 2.6)
-    dry-schema (1.13.3)
+    dry-schema (1.13.4)
       concurrent-ruby (~> 1.0)
       dry-configurable (~> 1.0, >= 1.0.1)
       dry-core (~> 1.0, < 2)
@@ -177,7 +177,7 @@ GEM
       event_emitter
       websocket
     wisper (2.0.1)
-    zeitwerk (2.6.13)
+    zeitwerk (2.6.15)
 
 PLATFORMS
   arm64-darwin-22
