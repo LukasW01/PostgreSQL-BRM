@@ -88,7 +88,7 @@ GEM
     opus-ruby (1.0.1)
       ffi
     parallel (1.24.0)
-    parser (3.3.1.0)
+    parser (3.3.2.0)
       ast (~> 2.4.1)
       racc
     pastel (0.8.0)
@@ -123,7 +123,7 @@ GEM
     rspec-support (3.13.0)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (1.64.0)
+    rubocop (1.64.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -198,7 +198,7 @@ DEPENDENCIES
   rake (~> 13.2)
   rspec (~> 3.13.0)
   rspec_junit_formatter (~> 0.6.0)
-  rubocop (~> 1.64.0)
+  rubocop (~> 1.64.1)
   simplecov (~> 0.22.0)
   tty-box (~> 0.7.0)
   tty-config (~> 0.6.0)
