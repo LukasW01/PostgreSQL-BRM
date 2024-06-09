@@ -3,7 +3,7 @@ services:
 
 stages:
   - test
-  - lint
+  - bundle
   - docker
 
 variables:
@@ -22,7 +22,7 @@ include:
   - template: Security/SAST.gitlab-ci.yml
 
 rubocop:
-  stage: lint
+  stage: bundle
   before_script:
     - ruby -v
     - bundle config set --local deployment true
@@ -32,7 +32,7 @@ rubocop:
   image: ruby:3.3.0
 
 rspec:
-  stage: test
+  stage: bundle
   before_script:
     - ruby -v
     - bundle config set --local deployment true
