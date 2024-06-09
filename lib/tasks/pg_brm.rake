@@ -1,16 +1,18 @@
 require_relative '../util/terminal'
+require_relative '../util/file'
+require_relative '../util/crypt'
+require_relative '../configuration/env'
 require_relative '../database/postgres'
 require_relative '../storage/s3'
 require_relative '../notifications/hooks'
-require_relative '../configuration/env'
-require_relative '../util/file'
 require 'rake'
 require 'tty-prompt'
 require 'tty-spinner'
 require 'pastel'
 require 'parallel'
+require 'rbnacl'
 
-namespace :pg_brm do # rubocop:disable Metrics/BlockLength
+namespace :pg_brm do
   desc 'Dump the database to a file'
   task :dump do
     terminal.box('Dump', env_to_text)
@@ -20,6 +22,7 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
       file_path = terminal.spinner("Backing up database #{index}") { db.dump(index) }
 
       if options[:s3].is_a?(Hash)
+        terminal.spinner('Encrypting file') { crypt.encrypt_file(file_path) }
         terminal.spinner('Uploading file') { storage.upload(file_path) }
         terminal.spinner('Deleting local file') { File.delete(file_path) } if File.exist?(file_path)
       end
@@ -34,19 +37,28 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
 
     terminal.spinner("#{pastel.red.bold('Error:')} No databases available") { exit } unless options[:postgres].is_a?(Hash)
     index = prompt.select('Select a database to restore', database_index) do |menu|
-      menu.choice(pastel.red.bold('Cancle').to_s) { exit }
+      menu.choice(pastel.red.bold('Cancel').to_s) { exit }
     end
 
     terminal.spinner("#{pastel.red.bold('Error:')} No dumps available") { exit } unless list_files(index).any?
-    file_path = prompt.select('Select a dump to restore', list_files(index)) do |menu|
-      menu.choice(pastel.red.bold('Cancle').to_s) { exit }
+    file = prompt.select('Select a dump to restore', list_files(index)) do |menu|
+      menu.choice(pastel.red.bold('Cancel').to_s) { exit }
     end
 
-    terminal.spinner('Downloading file') { storage.download(file_path) } if options[:s3].is_a?(Hash)
-    terminal.spinner('Reseting database') { db.reset(index) }
-    terminal.spinner('Restoring database') { db.restore(index, file_path) }
-    terminal.spinner('Deleting local file') { File.delete(file_path) } if options[:s3].is_a?(Hash) && File.exist?(file_path)
+    terminal.spinner('Downloading file') { storage.download(file) } if options[:s3].is_a?(Hash)
+    terminal.spinner('Decrypting file') { crypt.decrypt_file(File.join('lib/backup/', file.to_s)) } if options[:s3].is_a?(Hash)
+    terminal.spinner('Resetting database') { db.reset(index) }
+    terminal.spinner('Restoring database') { db.restore(index, File.join('lib/backup/', file.to_s)) }
+    terminal.spinner('Deleting local file') { File.delete(File.join('lib/backup/', file.to_s)) } if options[:s3].is_a?(Hash)
     terminal.spinner('Sending notifications (u.a : Discord, Mailgun, Pushover)') { hooks.send(:restore) }
+  end
+
+  desc 'Generate a key for encryption'
+  task :key_gen do
+    keys = terminal.spinner('Generating Key-Pair') { RbNaCl::PrivateKey.generate }
+
+    puts "\nPublic-Key: #{keys.public_key.to_bytes.unpack1('H*')[0..31]}"
+    puts "Private-Key: #{keys.to_bytes.unpack1('H*')[0..31]}"
   end
 
   private
@@ -77,6 +89,10 @@ namespace :pg_brm do # rubocop:disable Metrics/BlockLength
 
   def file
     @file ||= Util::File.new
+  end
+
+  def crypt
+    @crypt ||= Util::Crypt.new
   end
 
   def options

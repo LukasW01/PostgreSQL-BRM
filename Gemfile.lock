@@ -85,6 +85,7 @@ GEM
     netrc (0.11.0)
     oj (3.16.3)
       bigdecimal (>= 3.0)
+    open3 (0.2.1)
     opus-ruby (1.0.1)
       ffi
     parallel (1.24.0)
@@ -100,6 +101,8 @@ GEM
     racc (1.8.0)
     rainbow (3.1.1)
     rake (13.2.1)
+    rbnacl (7.1.1)
+      ffi
     regexp_parser (2.9.2)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -193,9 +196,11 @@ DEPENDENCIES
   dry-validation (~> 1.10)
   logger (~> 1.6)
   mailgun-ruby (~> 1.2.14)
+  open3 (~> 0.2.1)
   pastel (~> 0.8.0)
   pushover (~> 3.0)
   rake (~> 13.2)
+  rbnacl (~> 7.1, >= 7.1.1)
   rspec (~> 3.13.0)
   rspec_junit_formatter (~> 0.6.0)
   rubocop (~> 1.64.1)

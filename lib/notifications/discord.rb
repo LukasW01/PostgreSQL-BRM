@@ -1,11 +1,12 @@
 require_relative '../configuration/env'
+require_relative '../util/file'
 require 'discordrb/webhooks'
 require 'cronex'
 require 'logger'
 
 module Notifications
   class Discord
-    attr_reader :env, :discord
+    attr_reader :discord
 
     def initialize
       @file = Util::File.new
@@ -32,9 +33,8 @@ module Notifications
           end
         end
       rescue StandardError => e
-        @logger.error("Error sending message to Discord for event: #{event}")
-        @logger.error(e.message)
-        raise e
+        @logger.error("Error sending message to Discord \nERROR: #{e.message}")
+        exit!
       end
     end
 
@@ -48,9 +48,7 @@ module Notifications
     # cronex gem to parse cron expressions
     # @daily like expressions are not supported
     def cronex
-      Cronex::ExpressionDescriptor.new(ENV.fetch('SCHEDULE', nil)).description
-    rescue StandardError
-      Cronex::ExpressionDescriptor.new('0 0 * * *').description
+      Cronex::ExpressionDescriptor.new(ENV.fetch('SCHEDULE', '0 0 * * *')).description
     end
   end
 end

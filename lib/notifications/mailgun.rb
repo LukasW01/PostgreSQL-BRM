@@ -6,7 +6,7 @@ require 'mailgun-ruby'
 
 module Notifications
   class MailGun
-    attr_reader :env, :mailgun
+    attr_reader :mailgun
 
     def initialize
       @file = Util::File.new
@@ -32,9 +32,8 @@ module Notifications
           }
         )
       rescue StandardError => e
-        @logger.error("Error sending E-Mail with Mailgun-API for event: #{event}")
-        @logger.error(e.message)
-        raise e
+        @logger.error("Error sending E-Mail with Mailgun-API \nERROR: #{e.message}")
+        exit!
       end
     end
 
@@ -48,9 +47,7 @@ module Notifications
     # cronex gem to parse cron expressions
     # @daily like expressions are not supported
     def cronex
-      Cronex::ExpressionDescriptor.new(ENV.fetch('SCHEDULE', nil)).description
-    rescue StandardError
-      Cronex::ExpressionDescriptor.new('0 0 * * *').description
+      Cronex::ExpressionDescriptor.new(ENV.fetch('SCHEDULE', '0 0 * * *')).description
     end
   end
 end

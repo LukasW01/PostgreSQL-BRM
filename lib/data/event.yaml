@@ -1,17 +1,17 @@
 backup:
-  description: "This message tells you that the rake task has been executed successfully."
+  description: "The rake task has been executed successfully."
   status: "Sucess! ✅"
   info: "The backup for the database(s) was sucessfull (%s)"
   schedule: "The next backup is scheduled to occur '%s'."
 
 error:
-  description: "This message tells you that the rake task has been executed but failed with an error."
+  description: "The rake task has been executed but failed with an error."
   status: "Failed! ❌"
   info: "The following database(s) could not be backed up (%s). Please check your logs to fix the error."
   schedule: "The next backup is scheduled to occur '%s'."
 
 restore: 
-  description: "This message tells you that the rake task has been executed successfully."
+  description: "The rake task has been executed successfully."
   status: "Sucess! ✅"
-  info: The restore for the database(s) was sucessfull (%s)"
+  info: "The restore for the database(s) was sucessfull (%s)"
   schedule: "After this restore, the next backup is scheduled to occur '%s'."

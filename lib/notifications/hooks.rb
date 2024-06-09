@@ -1,5 +1,4 @@
 require_relative '../configuration/env'
-require_relative '../util/file'
 require_relative 'discord'
 require_relative 'pushover'
 require_relative 'mailgun'

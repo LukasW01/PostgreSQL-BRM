@@ -20,7 +20,7 @@ RSpec.describe Util::Terminal do
     it 'outputs the correct string' do
       text = 'Hello, world!'
       bullets = ['Bullet 1', 'Bullet 2']
-      expected_output = TTY::Box.frame(width: 50, title: { top_left: 'pg_brm', bottom_right: '1.1' }) do
+      expected_output = TTY::Box.frame(width: 50, title: { top_left: 'pg_brm', bottom_right: 'v1.3' }) do
         "#{text}\n\n#{bullets.join("\n")}"
       end
 

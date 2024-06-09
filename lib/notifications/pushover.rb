@@ -6,7 +6,7 @@ require 'logger'
 
 module Notifications
   class PushOver
-    attr_reader :env, :pushover
+    attr_reader :pushover
 
     def initialize
       @file = Util::File.new
@@ -27,9 +27,8 @@ module Notifications
           priority: priority(event), expire: 3600, retry: 60
         ).push
       rescue StandardError => e
-        @logger.error("Error sending message to Pushover for event: #{event}")
-        @logger.error(e.message)
-        raise e
+        @logger.error("Error sending message to Pushover \nERROR: #{e.message}")
+        exit!
       end
     end
 
@@ -38,9 +37,9 @@ module Notifications
     # set priority for pushover messages based on event
     def priority(event)
       case event
-      when :backup, :s3_success, :restore
+      when :backup, :restore
         0
-      when :error, :s3_failure
+      when :error, :s3
         2
       end
     end
@@ -53,9 +52,7 @@ module Notifications
     # cronex gem to parse cron expressions
     # @daily like expressions are not supported
     def cronex
-      Cronex::ExpressionDescriptor.new(ENV.fetch('SCHEDULE', nil)).description
-    rescue StandardError
-      Cronex::ExpressionDescriptor.new('0 0 * * *').description
+      Cronex::ExpressionDescriptor.new(ENV.fetch('SCHEDULE', '0 0 * * *')).description
     end
   end
 end

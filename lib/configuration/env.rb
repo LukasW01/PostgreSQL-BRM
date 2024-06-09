@@ -16,19 +16,12 @@ module Env
       @options[key]
     end
 
-    def get_each_key(key)
-      key.each do |k|
-        Validation.new.validate(k)
-        @options[k]
-      end
-    end
-
     private
 
     def load_yaml
       @options.merge!(YAML.load(open('env.yaml')).transform_keys(&:to_sym))
     rescue Errno::ENOENT
-      raise 'env.yaml not found. take reference from env.yaml.example.'
+      raise 'No env.yaml in app root found. Take a reference from env.example.yaml'
     end
   end
 end

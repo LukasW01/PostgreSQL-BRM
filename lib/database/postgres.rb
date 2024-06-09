@@ -3,6 +3,7 @@ require_relative '../notifications/hooks'
 require 'pathname'
 require 'logger'
 require 'time'
+require 'open3'
 
 module Database
   class Postgres
@@ -17,22 +18,11 @@ module Database
       file_path = File.join('lib/backup', "#{index}_#{file_date}.sql")
 
       @logger.info("Backing up database #{index}")
-      begin
-        system("PGPASSWORD='#{@env[index]['password']}' pg_dump -F p -v -O -U '#{@env[index]['user']}' -h '#{@env[index]['host']}' -p '#{@env[index]['port']}' -d '#{@env[index]['database']}' -f '#{file_path}' &> /dev/null")
-      rescue StandardError => e
+      stdout, stderr, status = Open3.capture3("PGPASSWORD='#{@env[index]['password']}' pg_dump -Fc -v -O -U '#{@env[index]['user']}' -h '#{@env[index]['host']}' -p '#{@env[index]['port']}' -d '#{@env[index]['database']}' -f '#{file_path}'")
+      unless status.success?
+        @logger.error("Error backing up database #{index} \nSTDOUT: #{stdout}\nSTDERR: #{stderr}")
         @hook.send(:error)
-        @logger.error("Error backing up database #{index}")
-        @logger.error(e.message)
-        raise e
-      end
-
-      if File.exist?(file_path)
-        @logger.info("Database #{index} backed up to #{file_path}")
-      else
-        @hook.send(:error)
-        @logger.error("Error saving database #{index}. Backup file #{file_path} was not found due to an error while saving")
-        @logger.error('Possible root cause: Connection interrupted/missing write permissions.')
-        raise 'Error backing up database. Backup file not found due to an error when backing up'
+        exit!
       end
 
       file_path
@@ -41,29 +31,27 @@ module Database
     # Drop the database and recreate it.
     def reset(index)
       @logger.info('Resetting database')
-      begin
-        system("PGPASSWORD='#{@env[index]['password']}' dropdb -U '#{@env[index]['user']}' -h '#{@env[index]['host']}' -p '#{@env['port']}' '#{@env[index]['database']}' &> /dev/null")
-        system("PGPASSWORD='#{@env[index]['password']}' createdb -U '#{@env[index]['user']}' -h '#{@env[index]['host']}' -p '#{@env['port']}' '#{@env[index]['database']}' &> /dev/null")
-      rescue StandardError => e
-        @hook.send(:error)
-        @logger.error('Error resetting database')
-        @logger.error(e.message)
-        raise e
+      stdout, stderr, status = Open3.capture3("PGPASSWORD='#{@env[index]['password']}' dropdb -U '#{@env[index]['user']}' -h '#{@env[index]['host']}' -p '#{@env[index]['port']}' '#{@env[index]['database']}'")
+      unless status.success?
+        @logger.error("Error dropping database '#{index}' \nSTDOUT: #{stdout}\nSTDERR: #{stderr}")
+        exit!
+      end
+
+      stdout, stderr, status = Open3.capture3("PGPASSWORD='#{@env[index]['password']}' createdb -U '#{@env[index]['user']}' -h '#{@env[index]['host']}' -p '#{@env[index]['port']}' '#{@env[index]['database']}'")
+      unless status.success?
+        @logger.error("Error creating database '#{index}' \nSTDOUT: #{stdout}\nSTDERR: #{stderr}")
+        exit!
       end
     end
 
     # Restore the database from a file in the file system.
-    def restore(index, file_name)
-      file_path = File.join('lib/backup', file_name)
-
-      @logger.info("Restoring database from #{file_path}")
-      begin
-        system("PGPASSWORD='#{@env[index]['password']}' psql -U '#{@env[index]['user']}' -h '#{@env[index]['host']}' -p '#{@env['port']}' -d '#{@env[index]['database']}' -f '#{file_path}' &> /dev/null")
-      rescue StandardError => e
+    def restore(index, file_path)
+      @logger.info("Restoring database from file: '#{file_path}'")
+      stdout, stderr, status = Open3.capture3("PGPASSWORD='#{@env[index]['password']}' pg_restore -U '#{@env[index]['user']}' -h '#{@env[index]['host']}' -p '#{@env[index]['port']}' -d '#{@env[index]['database']}' '#{file_path}'")
+      unless status.success?
+        @logger.error("Error restoring database #{index} \nSTDOUT: #{stdout}\nSTDERR: #{stderr}")
         @hook.send(:error)
-        @logger.error("Error restoring database from #{file_path}")
-        @logger.error(e.message)
-        raise e
+        exit!
       end
     end
 
