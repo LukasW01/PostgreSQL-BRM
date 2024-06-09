@@ -24,3 +24,6 @@ Style/GuardClause:
   
 Style/Next:
   Enabled: false
+  
+Bundler/OrderedGems:
+  Enabled: false
