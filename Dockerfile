@@ -5,7 +5,7 @@ ARG TARGETOS
 ARG TARGETARCH
 ENV SCHEDULE="0 0 * * *" TZ="Europe/Zurich" HEALTHCHECK_PORT=8080
 
-RUN apk update && apk add --no-cache postgresql-client postgresql && apk add --no-cache build-base libxml2-dev libxslt-dev tzdata && apk add ca-certificates curl && apk add --no-cache ruby-full && apk add --no-cache build-base libpq git libsodium
+RUN apk update && apk add --no-cache postgresql-client postgresql libpq ruby-full git libsodium libsodium-dev pkgconf curl build-base libxml2-dev libxslt-dev
 RUN curl --fail --retry 4 --retry-all-errors -L https://github.com/prodrigestivill/go-cron/releases/download/$GOCRONVER/go-cron-$TARGETOS-$TARGETARCH-static.gz | zcat > /usr/local/bin/go-cron && chmod a+x /usr/local/bin/go-cron
 
 RUN adduser --disabled-password --gecos "" $user
