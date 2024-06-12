@@ -1,4 +1,5 @@
 require_relative '../configuration/env'
+require_relative '../util/logger_delegator'
 require_relative '../util/file'
 require 'cronex'
 require 'logger'
@@ -28,7 +29,7 @@ module Notifications
           {
             from: "Postgres-BRM <#{@env['from']}>", to: @env['to'],
             subject: "pg_brm - #{event_files['status']}",
-            text: "#{event_files['description']} \n\n#{event_files['info'].gsub('%s', databases)} \n\n#{event_files['schedule'].gsub('%s', cronex)}"
+            text: "#{event_files['description']} \n\n#{event_files['info'].gsub('%s', databases)} \n\n#{event_file['schedule'] && event_files['schedule'].gsub('%s', cronex)}"
           }
         )
       rescue StandardError => e

@@ -1,4 +1,5 @@
 require_relative '../configuration/env'
+require_relative '../util/logger_delegator'
 require 'aws-sdk-s3'
 require 'aws-sdk-s3/client'
 require 'logger'
@@ -11,6 +12,7 @@ module Storage
     def initialize
       @logger = Logger.new('lib/log/ruby.log')
       @env = Env::Env.new.get_key(:s3)
+      @hook = Notifications::Hooks.new
       @s3 = Aws::S3::Client.new(access_key_id: @env['access_key_id'], secret_access_key: @env['secret_access_key'], endpoint: @env['endpoint'], region: @env['region'])
     end
 
@@ -26,6 +28,7 @@ module Storage
         )
       rescue StandardError => e
         @logger.error("Error uploading file #{file_path} to S3 \nERROR: #{e.message}")
+        @hook.send(:s3)
         exit!
       end
     end
@@ -41,6 +44,7 @@ module Storage
         )
       rescue StandardError => e
         @logger.error("Error downloading file #{file_name} from S3 \nERROR: #{e.message}")
+        @hook.send(:s3)
         exit!
       end
     end

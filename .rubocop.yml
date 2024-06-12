@@ -8,7 +8,7 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 30
+  Max: 35
 
 Metrics/BlockLength:
   Max: 85
@@ -20,10 +20,4 @@ Layout/LineLength:
   Max: 300
   
 Style/GuardClause:
-  Enabled: false
-  
-Style/Next:
-  Enabled: false
-  
-Bundler/OrderedGems:
   Enabled: false

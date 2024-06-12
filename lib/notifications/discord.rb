@@ -1,4 +1,5 @@
 require_relative '../configuration/env'
+require_relative '../util/logger_delegator'
 require_relative '../util/file'
 require 'discordrb/webhooks'
 require 'cronex'
@@ -29,7 +30,7 @@ module Notifications
             embed.description = event_file['description']
             embed.add_field(name: 'Status:', value: event_file['status'])
             embed.add_field(name: 'Info:', value: event_file['info'].gsub('%s', databases))
-            embed.add_field(name: 'Schedule:', value: event_file['schedule'].gsub('%s', cronex))
+            embed.add_field(name: 'Schedule:', value: event_file['schedule'].gsub('%s', cronex)) if event_file['schedule']
           end
         end
       rescue StandardError => e

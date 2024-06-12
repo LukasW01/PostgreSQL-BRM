@@ -4,12 +4,11 @@ require 'fileutils'
 module Util
   class File
     def initialize
-      @yaml = {}
       path_init
     end
 
     def event(event)
-      @yaml.merge!(YAML.load(open('lib/data/event.yaml')).transform_keys(&:to_sym))[event.to_sym]
+      YAML.load(open('lib/data/event.yaml')).then { |hash| hash.transform_keys(&:to_sym)[event.to_sym] }
     end
 
     def path_init
