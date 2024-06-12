@@ -1,5 +1,4 @@
 require_relative '../configuration/env'
-require_relative '../util/logger_delegator'
 require 'aws-sdk-s3'
 require 'aws-sdk-s3/client'
 require 'logger'

@@ -19,7 +19,7 @@ module Util
 
     def box(text, bullets)
       puts TTY::Box.frame(width: 50, title: { top_left: 'pg_brm', bottom_right: 'v1.3' }) {
-        "#{text}\n\n#{bullets.join("\n")}"
+        "#{text}\n\n#{Array(bullets).join("\n")}"
       }
     end
   end

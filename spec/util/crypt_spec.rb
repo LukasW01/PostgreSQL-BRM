@@ -27,7 +27,7 @@ RSpec.describe Util::Crypt do
     FileUtils.rm_f(file_name)
   end
 
-  describe '#encrypt_file' do
+  describe 'encrypt_file' do
     it 'encrypts the file content' do
       crypt.encrypt_file(file_name)
       encrypted_content = File.read(file_name)
@@ -35,7 +35,7 @@ RSpec.describe Util::Crypt do
     end
   end
 
-  describe '#decrypt_file' do
+  describe '.decrypt_file' do
     it 'decrypts the file content back to original' do
       crypt.encrypt_file(file_name)
       crypt.decrypt_file(file_name)

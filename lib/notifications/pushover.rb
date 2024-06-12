@@ -1,5 +1,4 @@
 require_relative '../configuration/env'
-require_relative '../util/logger_delegator'
 require_relative '../util/file'
 require 'pushover'
 require 'cronex'

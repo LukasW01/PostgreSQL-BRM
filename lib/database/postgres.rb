@@ -34,12 +34,14 @@ module Database
       stdout, stderr, status = Open3.capture3("PGPASSWORD='#{@env[index]['password']}' dropdb -U '#{@env[index]['user']}' -h '#{@env[index]['host']}' -p '#{@env[index]['port']}' '#{@env[index]['database']}'")
       unless status.success?
         @logger.error("Error dropping database '#{index}' \nSTDOUT: #{stdout}\nSTDERR: #{stderr}")
+        @hook.send(:restore)
         exit!
       end
 
       stdout, stderr, status = Open3.capture3("PGPASSWORD='#{@env[index]['password']}' createdb -U '#{@env[index]['user']}' -h '#{@env[index]['host']}' -p '#{@env[index]['port']}' '#{@env[index]['database']}'")
       unless status.success?
         @logger.error("Error creating database '#{index}' \nSTDOUT: #{stdout}\nSTDERR: #{stderr}")
+        @hook.send(:restore)
         exit!
       end
     end
@@ -50,7 +52,7 @@ module Database
       stdout, stderr, status = Open3.capture3("PGPASSWORD='#{@env[index]['password']}' pg_restore -U '#{@env[index]['user']}' -h '#{@env[index]['host']}' -p '#{@env[index]['port']}' -d '#{@env[index]['database']}' '#{file_path}'")
       unless status.success?
         @logger.error("Error restoring database #{index} \nSTDOUT: #{stdout}\nSTDERR: #{stderr}")
-        @hook.send(:error)
+        @hook.send(:restore)
         exit!
       end
     end

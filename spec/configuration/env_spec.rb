@@ -21,9 +21,16 @@ RSpec.describe 'Env' do
   end
 
   describe '.get_key' do
-    it 'loads postgres options correctly from yaml' do
+    it 'load postgres options from yaml' do
       allow(env).to receive(:get_key).and_return(options[:postgres])
       expect(Env::Env.new.get_key(:postgres)).to eq(options[:postgres])
+    end
+  end
+
+  describe '.get_key' do
+    it 'load empty options from yaml' do
+      allow(env).to receive(:get_key).and_return({})
+      expect(Env::Env.new.get_key(:postgres)).to eq({})
     end
   end
 end

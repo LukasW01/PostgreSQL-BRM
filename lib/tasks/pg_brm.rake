@@ -21,11 +21,11 @@ namespace :pg_brm do
     Parallel.each(options[:postgres].keys, in_threads: options[:postgres].keys.length) do |index|
       file_path = terminal.spinner("Backing up database #{index}") { db.dump(index) }
 
-      if options[:s3].is_a?(Hash)
-        terminal.spinner('Encrypting file') { crypt.encrypt_file(file_path) }
-        terminal.spinner('Uploading file') { storage.upload(file_path) }
-        terminal.spinner('Deleting local file') { File.delete(file_path) } if File.exist?(file_path)
-      end
+      next unless options[:s3].is_a?(Hash)
+
+      terminal.spinner('Encrypting file') { crypt.encrypt_file(file_path) }
+      terminal.spinner('Uploading file') { storage.upload(file_path) }
+      terminal.spinner('Deleting local file') { File.delete(file_path) } if File.exist?(file_path)
     end
 
     terminal.spinner('Sending notifications (u.a : Discord, Mailgun, Pushover)') { hooks.send(:backup) }
@@ -40,21 +40,23 @@ namespace :pg_brm do
       menu.choice(pastel.red.bold('Cancel').to_s) { exit }
     end
 
-    terminal.spinner("#{pastel.red.bold('Error:')} No dumps available") { exit } unless list_files(index).any?
+    terminal.spinner("#{pastel.red.bold('Error:')} No dumps available") { exit } unless list_files(index).is_a?(Hash)
     file = prompt.select('Select a dump to restore', list_files(index)) do |menu|
       menu.choice(pastel.red.bold('Cancel').to_s) { exit }
     end
 
     terminal.spinner('Downloading file') { storage.download(file) } if options[:s3].is_a?(Hash)
-    terminal.spinner('Decrypting file') { crypt.decrypt_file(File.join('lib/backup/', file.to_s)) } if options[:s3].is_a?(Hash)
+    terminal.spinner('Decrypting file') { crypt.decrypt_file(File.join('lib/backup/', file)) } if options[:s3].is_a?(Hash)
     terminal.spinner('Resetting database') { db.reset(index) }
-    terminal.spinner('Restoring database') { db.restore(index, File.join('lib/backup/', file.to_s)) }
-    terminal.spinner('Deleting local file') { File.delete(File.join('lib/backup/', file.to_s)) } if options[:s3].is_a?(Hash)
+    terminal.spinner('Restoring database') { db.restore(index, File.join('lib/backup/', file)) }
+    terminal.spinner('Deleting local file') { File.delete(File.join('lib/backup/', file)) } if options[:s3].is_a?(Hash)
     terminal.spinner('Sending notifications (u.a : Discord, Mailgun, Pushover)') { hooks.send(:restore) }
   end
 
   desc 'Generate a key for encryption'
   task :key_gen do
+    terminal.box('key_gen', [])
+
     keys = terminal.spinner('Generating Key-Pair') { RbNaCl::PrivateKey.generate }
 
     puts "\nPublic-Key: #{keys.public_key.to_bytes.unpack1('H*')[0..31]}"
