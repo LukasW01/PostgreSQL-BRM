@@ -25,11 +25,11 @@ rubocop:
   stage: bundle
   before_script:
     - ruby -v
-    - apk update && apk add --no-cache libsodium libsodium-dev pkgconf
+    - apt update && apt install libsodium pkgconf
     - bundle config set --local deployment true && bundle install -j $(nproc)
   script:
     - bundler exec rubocop
-  image: ruby:3.3.0-alpine3.19
+  image: ruby:3.3.0
 
 rspec:
   stage: bundle
@@ -46,7 +46,7 @@ rspec:
       - coverage/
     reports:
       junit: coverage/rspec.xml
-  image: ruby:3.3.0-alpine3.19
+  image: ruby:3.3.0
 
 docker_build:
   stage: docker
