@@ -1,6 +1,6 @@
 require_relative '../util/terminal'
 require_relative '../util/file'
-require_relative '../util/crypt'
+require_relative '../storage/crypt'
 require_relative '../configuration/env'
 require_relative '../database/postgres'
 require_relative '../storage/s3'
@@ -40,16 +40,16 @@ namespace :pg_brm do
       menu.choice(pastel.red.bold('Cancel').to_s) { exit }
     end
 
-    terminal.spinner("#{pastel.red.bold('Error:')} No dumps available") { exit } unless list_files(index).is_a?(Hash)
+    terminal.spinner("#{pastel.red.bold('Error:')} No dumps available") { exit } unless list_files(index).is_a?(Array)
     file = prompt.select('Select a dump to restore', list_files(index)) do |menu|
       menu.choice(pastel.red.bold('Cancel').to_s) { exit }
     end
 
     terminal.spinner('Downloading file') { storage.download(file) } if options[:s3].is_a?(Hash)
-    terminal.spinner('Decrypting file') { crypt.decrypt_file(File.join('lib/backup/', file)) } if options[:s3].is_a?(Hash)
+    terminal.spinner('Decrypting file') { crypt.decrypt_file(file) } if options[:s3].is_a?(Hash)
     terminal.spinner('Resetting database') { db.reset(index) }
-    terminal.spinner('Restoring database') { db.restore(index, File.join('lib/backup/', file)) }
-    terminal.spinner('Deleting local file') { File.delete(File.join('lib/backup/', file)) } if options[:s3].is_a?(Hash)
+    terminal.spinner('Restoring database') { db.restore(index, file) }
+    terminal.spinner('Deleting local file') { File.delete(file.to_s) } if options[:s3].is_a?(Hash)
     terminal.spinner('Sending notifications (u.a : Discord, Mailgun, Pushover)') { hooks.send(:restore) }
   end
 

@@ -25,7 +25,6 @@ rubocop:
   stage: bundle
   before_script:
     - ruby -v
-    - apt update && apt install libsodium pkgconf
     - bundle config set --local deployment true && bundle install -j $(nproc)
   script:
     - bundler exec rubocop
@@ -35,7 +34,6 @@ rspec:
   stage: bundle
   before_script:
     - ruby -v
-    - apk update && apk add --no-cache libsodium libsodium-dev pkgconf
     - bundle config set --local deployment true && bundle install -j $(nproc)
     - mkdir lib/backup lib/log
   script:

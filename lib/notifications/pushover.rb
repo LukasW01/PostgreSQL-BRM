@@ -23,7 +23,7 @@ module Notifications
         Pushover::Message.new(
           token: @env['app_token'], user: @env['user_key'],
           title: "pg_brm - #{event_file['status']}",
-          message: "#{event_file['description']} \n\n#{event_file['info'].gsub('%s', databases)} \n\n#{event_file['schedule'] && event_file['schedule'].gsub('%s', cronex)}",
+          message: "#{event_file['description']} \n\n#{event_file['info'].gsub('%s', databases)} \n\n#{event_file['schedule']&.gsub('%s', cronex)}",
           priority: priority(event), expire: 3600, retry: 60
         ).push
       rescue StandardError => e

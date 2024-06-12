@@ -16,7 +16,6 @@ module Util
       ::File.write(file_name, ciphertext)
     rescue StandardError => e
       @logger.error("Error encrypting file #{file_name} \nERROR: #{e.message}")
-      exit!
     end
 
     def decrypt_file(file_name)
@@ -25,7 +24,6 @@ module Util
       ::File.write(file_name, plaintext)
     rescue StandardError => e
       @logger.error("Error decrypting file #{file_name} \nERROR: #{e.message}")
-      exit!
     end
   end
 end

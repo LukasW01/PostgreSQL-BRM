@@ -1,22 +1,22 @@
 backup:
   description: "The rake task was executed successfully."
   status: "Success! ✅"
-  info: "The backup for the database(s) was successful (`%s`)."
-  schedule: "The next backup is scheduled to occur `%s`."
+  info: "The backup for the database(s) was successful ('%s')."
+  schedule: "The next backup is scheduled to occur '%s'."
 
 restore:
   description: "The rake task was executed successfully."
   status: "Success! ✅"
-  info: "The restore for the database(s) was successful (`%s`)."
+  info: "The restore for the database(s) was successful ('%s')."
 
 s3:
   description: "The rake task was executed but failed with an error."
   status: "Failed! ❌"
-  info: "The upload to S3 failed (`%s`). Please check your logs to fix the error."
+  info: "The upload to S3 failed. Please check your logs to fix the error."
 
 error:
   description: "The rake task was executed but failed with an error."
   status: "Failed! ❌"
-  info: "The database(s) could not be backed up (`%s`). Please check your logs to fix the error."
-  schedule: "The next backup is scheduled to occur `%s`."
+  info: "The database(s) could not be backed up ('%s'). Please check your logs to fix the error."
+  schedule: "The next backup is scheduled to occur '%s'."
 

@@ -19,7 +19,7 @@ module Notifications
     # Send an email through Mailgun.
     # Docs: https://github.com/mailgun/mailgun-ruby/tree/master/docs
     def send(event)
-      event_files = @file.event(event)
+      event_file = @file.event(event)
 
       @logger.info("Sending message to Mailgun for event: #{event}")
       begin
@@ -27,8 +27,8 @@ module Notifications
           @env['domain'],
           {
             from: "Postgres-BRM <#{@env['from']}>", to: @env['to'],
-            subject: "pg_brm - #{event_files['status']}",
-            text: "#{event_files['description']} \n\n#{event_files['info'].gsub('%s', databases)} \n\n#{event_file['schedule'] && event_files['schedule'].gsub('%s', cronex)}"
+            subject: "pg_brm - #{event_file['status']}",
+            text: "#{event_file['description']} \n\n#{event_file['info'].gsub('%s', databases)} \n\n#{event_file['schedule']&.gsub('%s', cronex)}"
           }
         )
       rescue StandardError => e
