@@ -94,7 +94,7 @@ namespace :pg_brm do
   end
 
   def crypt
-    @crypt ||= Util::Crypt.new
+    @crypt ||= Storage::Crypt.new
   end
 
   def options

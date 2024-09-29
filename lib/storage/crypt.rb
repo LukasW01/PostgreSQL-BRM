@@ -2,7 +2,7 @@ require 'rbnacl'
 require_relative '../configuration/env'
 require 'logger'
 
-module Util
+module Storage
   class Crypt
     def initialize
       @env = Env::Env.new.get_key(:crypt)
@@ -11,17 +11,17 @@ module Util
     end
 
     def encrypt_file(file_name)
-      file = ::File.read(file_name)
-      ciphertext = @box.encrypt(file)
-      ::File.write(file_name, ciphertext)
+      File.open(file_name, 'r') do |file|
+        File.write("#{file_name}.enc", @box.encrypt(file.read))
+      end
     rescue StandardError => e
       @logger.error("Error encrypting file #{file_name} \nERROR: #{e.message}")
     end
 
     def decrypt_file(file_name)
-      file = ::File.read(file_name)
-      plaintext = @box.decrypt(file)
-      ::File.write(file_name, plaintext)
+      File.open(file_name, 'r') do |file|
+        File.write("#{file_name}.dec", @box.decrypt(file.read))
+      end
     rescue StandardError => e
       @logger.error("Error decrypting file #{file_name} \nERROR: #{e.message}")
     end

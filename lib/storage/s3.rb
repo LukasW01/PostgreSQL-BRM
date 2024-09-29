@@ -50,11 +50,10 @@ module Storage
 
     # Populates a list of files stored in S3 by searching for files that include the dbname, sorting them by last_modified, and mapping them to a key/value list.
     def list_files(index)
-      response = @s3.list_objects_v2(bucket: @env['bucket'])
-      response[:contents]
-        .select { |file| file[:key].include?(index) }
-        .sort_by { |file| file[:last_modified] }
-        .map { |file| { File.basename(file[:key]) => file[:key] } }
+      @s3.list_objects_v2(bucket: @env['bucket'])[:contents]
+         .select { |file| file[:key].include?(index) }
+         .sort_by { |file| file[:last_modified] }
+         .map { |file| { File.basename(file[:key]) => file[:key] } }
     rescue StandardError => e
       @logger.error("Error listing files in S3 \nERROR: #{e.message}")
       exit!

@@ -17,6 +17,4 @@ s3:
 error:
   description: "The rake task was executed but failed with an error."
   status: "Failed! ❌"
-  info: "The database(s) could not be backed up ('%s'). Please check your logs to fix the error."
-  schedule: "The next backup is scheduled to occur '%s'."
-
+  info: "The database threw an error wile performing the requested action ('%s'). Please check your logs to fix the error."
