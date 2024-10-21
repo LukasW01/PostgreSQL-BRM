@@ -19,7 +19,7 @@ group :production do
   gem 'open3', '~> 0.2.1'
   gem 'pastel', '~> 0.8.0'
   gem 'pushover', '~> 3.0'
-  gem 'rbnacl', '~> 7.1', '>= 7.1.1'
+  gem 'rbnacl', '~> 7.1'
   gem 'tty-box', '~> 0.7.0'
   gem 'tty-config', '~> 0.6.0'
   gem 'tty-prompt', '~> 0.23.0'
