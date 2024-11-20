@@ -1,20 +1,33 @@
 # Security Policy
 
-## Reporting a Vulnerability
+This policy is based on the [CISA vulnerability disclosure policy template](https://www.cisa.gov/vulnerability-disclosure-policy-template) and the Policy that [Keycloak](https://github.com/keycloak/keycloak) uses.
 
-If you have discovered a security vulnerability in this project, please report it to the project maintainers. We appreciate your help in keeping our project secure.
+## Introduction
+
+This policy supports our open approach and is intended to give security researchers clear guidelines for submitting and coordinating discovered vulnerabilities with us. In complying with this policy, you authorize CNCF to work with you to understand and resolve the issue quickly. For more details about our processes, please read the security charter.
+
+## Guidelines
+
+- Access and visibility to research and all CVE related data will follow the principle of least privilege by all vendors involved.
+- Establish and set a reasonable amount of time to resolve the issue before a vulnerability is disclosed publicly; agree and coordinate on public disclosure dates when possible.
+- Public disclosure should be prioritized on the need to keep company, government, and individual data confidential and the general public safe.
+- All vendors will honor disclosure/embargo requests in good faith as long as all guidelines are met.
+- Vendors involved in coordinated disclosure will remain actively involved.
+
+Violation of these guidelines may result in the individual, or vendor, being added to a denied coordination list.
+
+## Reporting a suspected vulnerability
+
+Suspected vulnerabilities should be disclosed responsibly and not made public until after analysis and a fix are available. We will acknowledge your report within 7 business days and work with you to confirm the vulnerability's existence and impact. Our goal is to maintain open dialogue during the assessment and remediation process.
 
 ## Supported Versions
 
-This project only supports the latest version of the software. We strongly encourage you to update to the latest version as soon as possible to take advantage of the latest security fixes.
+Depending on the severity of a vulnerability the issue may be fixed in the current major.minor release of this Project, or for lower severity vulnerabilities or hardening in the following major.minor release.
 
-## Responsible Disclosure Policy
+## Coordinated Vulnerability Disclosure
 
-We take security seriously and are committed to working with you to identify and resolve security vulnerabilities. If you have found a security vulnerability, we kindly ask that you follow our responsible disclosure policy:
+To report a security vulnerability in the "Lern Mit" codebase, send an email to [lukas@wigger.one](mailto:lukas@wigger.one). Please test against the latest version, include the affected version in your report, provide detailed instructions on how to reproduce the issue with a minimal and reproducible example, and include your contact information for acknowledgements. If you are reporting known CVEs related to third-party libraries used in this Project, please create a new GitHub issue.
 
-    Do not publicly disclose the vulnerability before we have had a chance to address it.
-    Provide us with a reasonable amount of time to fix the vulnerability before any public disclosure.
-    Make a good faith effort to avoid disrupting the normal functioning of the project and its users.
-    Provide us with the details of the vulnerability, including a reproducible proof-of-concept.
+If you would like to collaborate on a fix for the security vulnerability, please include your GitHub username in the email, and we will provide you access to a temporary private fork where we can work together.
 
-We will acknowledge receipt of your report within 24 hours and will send you a more detailed response within 72 hours.
+If you discover any publicly disclosed security vulnerabilities, please notify us immediately through the same email address.
