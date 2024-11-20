@@ -1,6 +1,5 @@
 require_relative '../util/terminal'
 require_relative '../util/file'
-require_relative '../storage/crypt'
 require_relative '../configuration/env'
 require_relative '../database/postgres'
 require_relative '../storage/s3'
@@ -23,7 +22,6 @@ namespace :pg_brm do
 
       next unless options[:s3].is_a?(Hash)
 
-      terminal.spinner('Encrypting file') { crypt.encrypt_file(file_path) }
       terminal.spinner('Uploading file') { storage.upload(file_path) }
       terminal.spinner('Deleting local file') { File.delete(file_path) } if File.exist?(file_path)
     end
@@ -46,7 +44,6 @@ namespace :pg_brm do
     end
 
     terminal.spinner('Downloading file') { storage.download(file) } if options[:s3].is_a?(Hash)
-    terminal.spinner('Decrypting file') { crypt.decrypt_file(file) } if options[:s3].is_a?(Hash)
     terminal.spinner('Resetting database') { db.reset(index) }
     terminal.spinner('Restoring database') { db.restore(index, file) }
     terminal.spinner('Deleting local file') { File.delete(file.to_s) } if options[:s3].is_a?(Hash)
@@ -57,10 +54,9 @@ namespace :pg_brm do
   task :key_gen do
     terminal.box('key_gen', [])
 
-    keys = terminal.spinner('Generating Key-Pair') { RbNaCl::PrivateKey.generate }
+    keys = terminal.spinner('Generating Key') { SecureRandom.hex(32) }
 
-    puts "\nPublic-Key: #{keys.public_key.to_bytes.unpack1('H*')[0..31]}"
-    puts "Private-Key: #{keys.to_bytes.unpack1('H*')[0..31]}"
+    puts "\nKey: #{keys}"
   end
 
   private
@@ -91,10 +87,6 @@ namespace :pg_brm do
 
   def file
     @file ||= Util::File.new
-  end
-
-  def crypt
-    @crypt ||= Storage::Crypt.new
   end
 
   def options

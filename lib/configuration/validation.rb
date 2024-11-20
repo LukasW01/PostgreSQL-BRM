@@ -2,7 +2,6 @@ require_relative 'env'
 require_relative '../util/file'
 require_relative 'schema/s3_schema'
 require_relative 'schema/postgres_schema'
-require_relative 'schema/crypt_schema'
 require_relative 'schema/mailgun_schema'
 require_relative 'schema/pushover_schema'
 require_relative 'schema/discord_schema'
@@ -31,8 +30,6 @@ module Env
       case key
       when :postgres
         Schema::PostgresSchema.new.call(@env.options)
-      when :crypt
-        Schema::CryptSchema.new.call(@env.options)
       when :s3
         Schema::S3Schema.new.call(@env.options)
       when :mailgun

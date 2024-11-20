@@ -9,6 +9,7 @@ module Schema
         required(:endpoint).filled(:string)
         required(:bucket).filled(:string)
         required(:region).filled(:string)
+        required(:encryption).filled(:string)
       end
     end
 
