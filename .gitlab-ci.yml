@@ -35,7 +35,6 @@ rspec:
   before_script:
     - ruby -v
     - bundle config set --local deployment true && bundle install -j $(nproc)
-    - mkdir lib/backup lib/log
   script:
     - bundle exec rspec spec -r rspec_junit_formatter --format RspecJunitFormatter -o coverage/rspec.xml
   artifacts:

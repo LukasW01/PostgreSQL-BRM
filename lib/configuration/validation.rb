@@ -1,5 +1,4 @@
 require_relative 'env'
-require_relative '../util/file'
 require_relative 'schema/s3_schema'
 require_relative 'schema/postgres_schema'
 require_relative 'schema/mailgun_schema'

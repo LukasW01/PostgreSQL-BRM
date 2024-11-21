@@ -15,8 +15,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Setup backup & log dir
-        run: mkdir lib/backup lib/log
       - name: Run tests
         run: bundle exec rspec spec -r rspec_junit_formatter --format RspecJunitFormatter -o coverage/rspec.xml
 

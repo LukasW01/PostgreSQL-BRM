@@ -1,5 +1,4 @@
 require_relative '../util/terminal'
-require_relative '../util/file'
 require_relative '../configuration/env'
 require_relative '../database/postgres'
 require_relative '../storage/s3'
@@ -85,12 +84,8 @@ namespace :pg_brm do
     @prompt ||= TTY::Prompt.new
   end
 
-  def file
-    @file ||= Util::File.new
-  end
-
   def options
-    Env::Env.new.options
+    @options ||= Env::Env.new.options
   end
 
   def database_index
