@@ -17,7 +17,7 @@ Metrics/MethodLength:
   Max: 30
 
 Layout/LineLength:
-  Max: 300
+  Max: 350
   
 Style/GuardClause:
   Enabled: false

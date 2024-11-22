@@ -5,8 +5,6 @@ require 'fileutils'
 require_relative '../configuration/env'
 require_relative '../notifications/hooks'
 
-# TODO: Test S3 storage encryption
-# @link: https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/s3-encryption-migration.html
 module Storage
   class S3
     attr_reader :s3
@@ -15,23 +13,15 @@ module Storage
       @logger = Logger.new('lib/log/ruby.log')
       @env = Env::Env.new.get_key(:s3)
       @hook = Notifications::Hooks.new
-      @s3 = Aws::S3::EncryptionV2::Client.new(
-        access_key_id: @env['access_key_id'],
-        secret_access_key: @env['secret_access_key'],
-        endpoint: @env['endpoint'],
-        region: @env['region'],
-        encryption_key: @env['encryption'],
-        key_wrap_schema: :rsa_oaep_sha1, # the key_wrap_schema must be rsa_oaep_sha1 for asymmetric keys
-        content_encryption_schema: :aes_gcm_no_padding,
-        security_profile: :v2_and_legacy # to allow reading/decrypting objects encrypted by the V1 encryption client
-      )
+      @s3 = Aws::S3::Client.new(access_key_id: @env['access_key_id'], secret_access_key: @env['secret_access_key'], endpoint: @env['endpoint'], region: @env['region'])
+      @storage ||= Aws::S3::EncryptionV2::Client.new(access_key_id: @env['access_key_id'], secret_access_key: @env['secret_access_key'], endpoint: @env['endpoint'], region: @env['region'], encryption_key: @env['encryption'], key_wrap_schema: :aes_gcm, content_encryption_schema: :aes_gcm_no_padding, security_profile: :v2)
     end
 
     # Send files to S3 with encryption.
     def upload(file_path)
       @logger.info("Uploading file #{file_path} to S3")
       begin
-        @s3.put_object(
+        storage.put_object(
           bucket: @env['bucket'],
           key: file_path,
           body: File.read(file_path),
@@ -48,7 +38,7 @@ module Storage
     def download(file_name)
       @logger.info("Downloading file #{file_name} from S3")
       begin
-        @s3.get_object(
+        @storage.get_object(
           bucket: @env['bucket'],
           response_target: file_name,
           key: file_name
