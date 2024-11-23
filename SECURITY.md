@@ -4,7 +4,7 @@ This policy is based on the [CISA vulnerability disclosure policy template](http
 
 ## Introduction
 
-This policy supports our open approach and is intended to give security researchers clear guidelines for submitting and coordinating discovered vulnerabilities with us. In complying with this policy, you authorize CNCF to work with you to understand and resolve the issue quickly. For more details about our processes, please read the security charter.
+This policy supports our open approach and is intended to give security researchers clear guidelines for submitting and coordinating discovered vulnerabilities with us. In complying with this policy, you authorize us to work with you to understand and resolve the issue quickly. For more details about our processes, please read the security charter.
 
 ## Guidelines
 
@@ -26,8 +26,8 @@ Depending on the severity of a vulnerability the issue may be fixed in the curre
 
 ## Coordinated Vulnerability Disclosure
 
-To report a security vulnerability in the "Lern Mit" codebase, send an email to [lukas@wigger.one](mailto:lukas@wigger.one). Please test against the latest version, include the affected version in your report, provide detailed instructions on how to reproduce the issue with a minimal and reproducible example, and include your contact information for acknowledgements. If you are reporting known CVEs related to third-party libraries used in this Project, please create a new GitHub issue.
+To report a security vulnerability in the codebase, send an email to [lukas@wigger.one](mailto:lukas@wigger.one). Please test against the latest version, include the affected version in your report, provide detailed instructions on how to reproduce the issue with a minimal and reproducible example, and include your contact information for acknowledgements. If you are reporting known CVEs related to third-party libraries used in this Project, please create a new GitHub issue.
 
-If you would like to collaborate on a fix for the security vulnerability, please include your GitHub username in the email, and we will provide you access to a temporary private fork where we can work together.
+If you would like to collaborate on a fix for the security vulnerability, please include your GitHub/Gitlab username in the email, and we will provide you access to a temporary private fork where we can work together.
 
 If you discover any publicly disclosed security vulnerabilities, please notify us immediately through the same email address.
