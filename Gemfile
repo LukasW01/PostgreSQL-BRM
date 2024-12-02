@@ -9,7 +9,7 @@ group :development do
 end
 
 group :production do
-  gem 'aws-sdk-s3', '~> 1.173'
+  gem 'aws-sdk-s3', '~> 1.175'
   gem 'cronex', '~> 0.15.0'
   gem 'discordrb', '~> 3'
   gem 'dry-schema', '~> 1.13'
