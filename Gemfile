@@ -5,7 +5,7 @@ ruby '3.3.0'
 group :development do
   gem 'bump', '~> 0.10.0'
   gem 'rake', '~> 13.2'
-  gem 'rexml', '~> 3.3'
+  gem 'rexml', '~> 3.4'
 end
 
 group :production do
