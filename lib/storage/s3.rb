@@ -3,18 +3,18 @@ require 'aws-sdk-s3/encryption'
 require 'logger'
 require 'fileutils'
 require_relative '../configuration/env'
-require_relative '../notifications/hooks'
+require_relative '../notification/hooks'
 
 module Storage
   class S3
-    attr_reader :s3
+    attr_reader :s3, :storage
 
     def initialize
       @logger = Logger.new('lib/log/ruby.log')
       @env = Env::Env.new.get_key(:s3)
       @hook = Notifications::Hooks.new
       @s3 = Aws::S3::Client.new(access_key_id: @env['access_key_id'], secret_access_key: @env['secret_access_key'], endpoint: @env['endpoint'], region: @env['region'])
-      @storage ||= Aws::S3::EncryptionV2::Client.new(access_key_id: @env['access_key_id'], secret_access_key: @env['secret_access_key'], endpoint: @env['endpoint'], region: @env['region'], encryption_key: @env['encryption'], key_wrap_schema: :aes_gcm, content_encryption_schema: :aes_gcm_no_padding, security_profile: :v2)
+      @storage = Aws::S3::EncryptionV2::Client.new(access_key_id: @env['access_key_id'], secret_access_key: @env['secret_access_key'], endpoint: @env['endpoint'], region: @env['region'], encryption_key: @env['encryption'], key_wrap_schema: :aes_gcm, content_encryption_schema: :aes_gcm_no_padding, security_profile: :v2)
     end
 
     # Send files to S3 with encryption.

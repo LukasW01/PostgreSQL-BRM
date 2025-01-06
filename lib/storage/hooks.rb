@@ -19,6 +19,8 @@ module Storage
 
     def list_files(provider, index)
       case provider
+      when :local
+        Database::Postgres.new.list_files(index)
       when :s3
         S3.new.list_files(index)
       end

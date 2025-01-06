@@ -16,11 +16,11 @@ module Env
     end
 
     def validate(key)
-      @logger.info("Request and validate '#{key}'")
-      @logger.error("Validation failed for '#{key}': #{validate_key(key).errors.to_h}") unless validate_key(key).success?
+      @logger.info("Request and validate Key: '#{key}'")
+      @logger.error("Validation failed for Key: '#{key}': #{validate_key(key).errors.to_h}") unless validate_key(key).success?
       raise validate_key(key).errors.to_h.to_s unless validate_key(key).success?
 
-      @logger.info("Validation passed for '#{key}'")
+      @logger.info("Validation successful for Key: '#{key}'")
     end
 
     private
@@ -38,7 +38,7 @@ module Env
       when :discord
         Schema::DiscordSchema.new.call(@env.options)
       else
-        raise "Invalid key: '#{key}'"
+        raise "Invalid Key: '#{key}'"
       end
     end
   end

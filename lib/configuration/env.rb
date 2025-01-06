@@ -11,6 +11,7 @@ module Env
 
     def get_key(key)
       Validation.new.validate(key)
+
       @options[key]
     end
 

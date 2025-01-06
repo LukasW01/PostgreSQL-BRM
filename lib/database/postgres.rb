@@ -1,5 +1,5 @@
 require_relative '../configuration/env'
-require_relative '../notifications/hooks'
+require_relative '../notification/hooks'
 require 'pathname'
 require 'logger'
 require 'time'
