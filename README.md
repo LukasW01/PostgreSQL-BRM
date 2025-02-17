@@ -26,9 +26,9 @@ bundler exec rake pg_brm:restore
 
 ## Docker
 
-The PostgreSQL BRM is available as a Docker image. The image will periodically dump all databases.
+The PostgreSQL BRM is deployed in a Docker image. The image will periodically dump all databases.
 
-Note: Configuration is managed via environment variables and an `env.yaml` file.
+Note: Configuration is managed using environment variables and an `env.yaml' file.
 
 ```yaml
 ---
@@ -56,25 +56,24 @@ services:
         networks:
         - db
         volumes:
-        - ./env.yaml:/ruby/env.yaml:Z
+        - ./env.yaml:/ruby/env.yaml:ro
         - ./backup/:/ruby/lib/backup:Z
         - ./log/:/ruby/lib/log:Z
         environment:
         - TZ=Europe/Zurich # default
-        - SCHEDULE=0 0 * * * # default (no @daily like expression supported)
+        - SCHEDULE=0 0 * * * # default ('@daily' expression are not supported)
         labels:
         - io.containers.autoupdate=registry
 
 networks:
   db:
-    external: true
 ```
 
 ## Configuration
 
-Create an `env.yaml` file and populate it with the required environment variables. You can use the [env.example.yaml](https://gitlab.com/LukasW01/postgresql-brm/-/blob/main/env.example.yaml) as a template.
+Create an `env.yaml' file and fill it with the required environment variables. You can use [env.example.yaml](https://gitlab.com/LukasW01/postgresql-brm/-/blob/main/env.example.yaml) as a template.
 
-If an `env.yaml` file is not present, the PostgreSQL BRM will raise an error and exit. This configuration file is mandatory for running the PostgreSQL BRM and is validated during the initialization of various modules.
+If an `env.yaml` file is not present, the PostgreSQL BRM will raise an error and exit. This configuration file is mandatory for running the PostgreSQL BRM and is validated during the initialisation of various modules.
 
 The only required environment variable is `postgres`. Other environment variables are optional and can be omitted.
 
