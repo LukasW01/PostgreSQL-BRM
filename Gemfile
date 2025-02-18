@@ -12,7 +12,7 @@ group :production do
   gem 'cronex', '~> 0.15.0'
   gem 'discordrb', '~> 3'
   gem 'dry-schema', '~> 1.13'
-  gem 'dry-validation', '~> 1.10'
+  gem 'dry-validation', '~> 1.11'
   gem 'logger', '~> 1.6'
   gem 'mailgun-ruby', '~> 1.3.2'
   gem 'open3', '~> 0.2.1'
