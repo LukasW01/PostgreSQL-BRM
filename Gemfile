@@ -11,7 +11,7 @@ group :production do
   gem 'aws-sdk-s3', '~> 1.182'
   gem 'cronex', '~> 0.15.0'
   gem 'discordrb', '~> 3'
-  gem 'dry-schema', '~> 1.13'
+  gem 'dry-schema', '~> 1.14'
   gem 'dry-validation', '~> 1.10'
   gem 'logger', '~> 1.6'
   gem 'mailgun-ruby', '~> 1.3.2'
