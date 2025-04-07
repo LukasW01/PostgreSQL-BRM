@@ -14,7 +14,7 @@ group :production do
   gem 'dry-schema', '~> 1.14'
   gem 'dry-validation', '~> 1.10'
   gem 'logger', '~> 1.7'
-  gem 'mailgun-ruby', '~> 1.3.4'
+  gem 'mailgun-ruby', '~> 1.3.5'
   gem 'open3', '~> 0.2.1'
   gem 'pastel', '~> 0.8.0'
   gem 'pushover', '~> 3.0'
